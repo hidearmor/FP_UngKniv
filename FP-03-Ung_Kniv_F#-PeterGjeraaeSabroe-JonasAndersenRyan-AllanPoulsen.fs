@@ -122,4 +122,14 @@ let ( ./) (a,b) (c,d) =
 
 // Exercise 3.6 - HR 4.4 - altSum -> HR page 76
 // function alternating between adding and subtracting the contents of a list.
-let rec altsum = failwith "not implemented"
+
+//Denne version gider ikke håndtere [_] (single-element list)
+let rec altsum (xs: int list) =
+    match xs with
+    |[] -> 0
+    |x0::(x1::xs as xs') -> if xs' = [] then x0 else (x0 - x1) + altsum xs
+
+//Denne version gider ikke håndtere [] (empty list)
+let rec altsum = function
+    |[x] -> x
+    |x0::x1::xs -> x0 - x1 + altsum xs
