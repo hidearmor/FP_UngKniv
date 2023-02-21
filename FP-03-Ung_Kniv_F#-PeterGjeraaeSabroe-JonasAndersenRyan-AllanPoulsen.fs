@@ -110,11 +110,11 @@ let ( .*) (a:float,b:float) (c:float,d:float) = (a*c-b*d, b*c + a*d) //calculate
 //      2. Declare infix for subtraction and division
 let ( .-) (a:float,b:float) (c:float,d:float) = (a - c, b - d) //calculate using the defintions in the assignment
 
-let ( ./) (a,b) (c,d) =  (a*(c/(c*c + d*d) - b*(-d/(c*c + d*d)) , b*(c/(c*c + d*d))+a*(-d/(c*c + d*d)))) //calculate using the defintions in the assignment
+let ( ./) (a,b) (c,d) =  ((a*(c/(c*c + d*d)) - (b*(-d/(c*c + d*d))), (b*(c/(c*c + d*d)))+(a*(-d/(c*c + d*d))))) //calculate using the defintions in the assignment
 
 //      3. Use 'let' expressions in division to avoid repeated evals
 (*The basic same as just above, only be simplified by using functions instead*)
-let ( ./) (a,b) (c,d) = 
+let ( ../) (a,b) (c,d) = 
     let inv_c = c/(c*c + d*d)
     let inv_d = -d/(c*c + d*d)
     (a*inv_c-b*inv_d, b*inv_c+a*inv_d)
