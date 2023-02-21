@@ -86,10 +86,10 @@ let (|+|) moneyA moneyB =  //use the basic same structure for calculating as for
     {pound = po; shilling = sh; pence = pe}                 //return a record of moneyA + moneyB
 
 // Money record subtraction
-type Money = {pound : int; shilling : int; pence : int};;
+// type Money = {pound : int; shilling : int; pence : int};;
 
-let moneyA = {pound = 10; shilling = 4; pence = 7};;
-let moneyB = {pound = 4; shilling = 13; pence = 5};; 
+// let moneyA = {pound = 10; shilling = 4; pence = 7};;
+// let moneyB = {pound = 4; shilling = 13; pence = 5};; 
 
 let (|-|) moneyA moneyB =  //use the basic same structure for calculating as for (^-^) only with moneyA and moneyB
     let penceA = moneyA.pound*20*12 + moneyA.shilling*12 + moneyA.pence
