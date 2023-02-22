@@ -86,10 +86,10 @@ let (|+|) moneyA moneyB =  //use the basic same structure for calculating as for
     {pound = po; shilling = sh; pence = pe}                 //return a record of moneyA + moneyB
 
 // Money record subtraction
-type Money = {pound : int; shilling : int; pence : int};;
+// type Money = {pound : int; shilling : int; pence : int};;
 
-let moneyA = {pound = 10; shilling = 4; pence = 7};;
-let moneyB = {pound = 4; shilling = 13; pence = 5};; 
+// let moneyA = {pound = 10; shilling = 4; pence = 7};;
+// let moneyB = {pound = 4; shilling = 13; pence = 5};; 
 
 let (|-|) moneyA moneyB =  //use the basic same structure for calculating as for (^-^) only with moneyA and moneyB
     let penceA = moneyA.pound*20*12 + moneyA.shilling*12 + moneyA.pence
@@ -126,7 +126,7 @@ let ( ../) (a,b) (c,d) =
         | [] | [_] as xs -> if xs = [] then 0 else List.head xs     //<-- matches to 0 or 1 element, binds the matched list to xs so that if xs is empty then return 0
         | x0::x1::xs -> x0 - x1 + altsum xs                         //<-- If the list has at least two elements, then subtract x1 from x0 and add the result to the recursive call
 
-    //Den originale 3 clauses fra bogen
+    // //Allan: Den originale 3 clauses fra bogen
     // let rec altsum = function
     //     | [] -> 0
     //     | [x] -> x
