@@ -122,25 +122,11 @@ let ( ../) (a,b) (c,d) =
 
 // Exercise 3.6 - HR 4.4 - altSum -> HR page 76
 // function alternating between adding and subtracting the contents of a list.
-
-// //Denne version gider ikke håndtere [_] (single-element list)
-// let rec altsum (xs: int list) =
-//     match xs with
-//     |[] -> 0
-//     |x0::(x1::xs as xs') -> if xs' = [] then x0 else (x0 - x1) + altsum xs
-
-// //Denne version gider ikke håndtere [] (empty list)
-// let rec altsum = function
-//     |[x] -> x
-//     |x0::x1::xs -> x0 - x1 + altsum xs
-
-
-    //Allan: jeg har et skud her - jeg synes, den virker. Check it out 
     let rec altsum = function
         | [] | [_] as xs -> if xs = [] then 0 else List.head xs     //<-- matches to 0 or 1 element, binds the matched list to xs so that if xs is empty then return 0
         | x0::x1::xs -> x0 - x1 + altsum xs                         //<-- If the list has at least two elements, then subtract x1 from x0 and add the result to the recursive call
 
-    // //Allan: Den originale 3 clauses fra bogen
+    //Den originale 3 clauses fra bogen
     // let rec altsum = function
     //     | [] -> 0
     //     | [x] -> x
