@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "XvKsF6h62oMMPko0W1y6BDwYyiw8RIyI+57/AWkRd2VkedXUHaL93IumjgGcpG2PQe1PwLAMqFEZv9mmNeQEvA==",
+  "success": true,
+  "projectFilePath": "/Users/jonas2.0/MyDocuments/ITU/FP/FP_Assignments/FP_UngKniv/FP_UngKniv.fsproj",
+  "expectedPackageFiles": [
+    "/Users/jonas2.0/.nuget/packages/fsharp.core/7.0.0/fsharp.core.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
