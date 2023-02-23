@@ -9,9 +9,17 @@ let rec explode2 (s:string) =
 
 
 // Exercise 4.2 - implode - char list to string
-let implode list = failwith "not implemented"
+let implode (list:list<char>) = 
+    List.foldBack 
+        (fun (c:char) s -> string c + s)
+        list
+        ""
 
-let implodeRev list = failwith "not implemented"
+let implodeRev (list:list<char>) =
+    List.fold 
+        (fun s (c:char) -> string c + s)
+        "" 
+        list
 
 // Exercise 4.3 - toUpper
 let toUpper (s:string) = failwith "not implemented"
