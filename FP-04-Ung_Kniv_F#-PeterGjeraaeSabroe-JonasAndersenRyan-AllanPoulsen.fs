@@ -1,7 +1,13 @@
 module a2
 // Exercise 4.1 - explode - string to char list
-let explode (s:string) = failwith "not implemented"
-let rec explode2 (s:string) = failwith "not implemented"
+let explode (s:string) = List.ofArray(s.ToCharArray())
+
+let rec explode2 (s:string) = 
+    match s with //does not work with "function" keyword, but does mit "match s with"
+    | ""  -> []
+    | _ -> s.Chars(0)::explode2(s.Remove(0,1))
+
+
 // Exercise 4.2 - implode - char list to string
 let implode list = failwith "not implemented"
 
