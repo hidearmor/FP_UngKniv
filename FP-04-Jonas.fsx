@@ -22,15 +22,27 @@ let implodeRev (list:list<char>) =
         list
 
 // Exercise 4.3 - toUpper
-let toUpper (s:string) = failwith "not implemented"
+// let toUpper (s:string) = 
+//     implode(explode s |> List.map (fun c -> System.Char.ToUpper c))
+
+let toUpper (s:string) = 
+    implode(List.map (fun c -> System.Char.ToUpper c) (explode s))
 
 // explode >> map >> implode
-let toUpper1 (s:string) = failwith "not implemented"
-// let toUpper2 (s:string) = implode (explode s |> List.map(fun x -> (Char.ToUpper(x))));;
-let toUpper2 (s:string) = failwith "not implemented"
+let toUpper1 (s:string) = 
+    // (List.map (fun c -> System.Char.ToUpper c) explode s) >> implode
+    explode >> List.map (fun c -> System.Char.ToUpper c) >> implode 
+    // but this one returns a function and not a value 
+    // - weren't we supposed to make it do the same as toUpper?
+    
+let toUpper2 (s:string) =
+    explode s |> (implode << (List.map (fun c -> System.Char.ToUpper c)))
 
 // Exercise 4.4 - palindrome - treating empty strings as palindromes too.
-let rec palindrome (s:string) = failwith "not implemented"
+let rec palindrome (s:string) = 
+    match s with
+    | "" -> true
+
 // Exercise 4.5 - ack
 let rec ack t = failwith "not implemented"
     // ack(3, 11) = 16381
