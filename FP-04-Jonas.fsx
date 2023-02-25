@@ -39,9 +39,8 @@ let toUpper2 (s:string) =
     explode s |> (implode << (List.map (fun c -> System.Char.ToUpper c)))
 
 // Exercise 4.4 - palindrome - treating empty strings as palindromes too.
-let rec palindrome (s:string) = 
-    match s with
-    | "" -> true
+// not a recursive implementation, but a simple and effective one
+let palindrome (s:string) = (s = (explode s |> implodeRev))
 
 // Exercise 4.5 - ack
 let rec ack t = failwith "not implemented"
