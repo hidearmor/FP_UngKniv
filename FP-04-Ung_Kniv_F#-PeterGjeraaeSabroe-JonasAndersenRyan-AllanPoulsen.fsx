@@ -2,10 +2,15 @@ module a2
 // Exercise 4.1 - explode - string to char list
 let explode (s:string) = List.ofArray(s.ToCharArray())
 
+
 let rec explode2 (s:string) = 
     match s with //does not work with "function" keyword, but does mit "match s with"
     | ""  -> []
     | _ -> s.Chars(0)::explode2(s.Remove(0,1))
+
+
+
+
 
 
 // Exercise 4.2 - implode - char list to string
@@ -21,10 +26,9 @@ let implodeRev (list:list<char>) =
         "" 
         list
 
-// Exercise 4.3 - toUpper
-<<<<<<< HEAD:FP-04-Ung_Kniv_F#-PeterGjeraaeSabroe-JonasAndersenRyan-AllanPoulsen.fsx
-// let toUpper (s:string) = failwith "not implemented"
 
+
+// Exercise 4.3 - toUpper
 //Jonas' One-liner
 let toUpper (s:string) = implode(List.map (fun c -> System.Char.ToUpper c) (explode s))
 
@@ -35,20 +39,33 @@ let toUpper (s:string) =
     implode g
 
 
-// explode >> map >> implode
-// let toUpper1 (s:string) = failwith "not implemented"
 
+// let toUpper1 (s:string) = failwith "not implemented"
 //Allan's suggestion
 let toUpper1 (s:string) = (explode >> List.map System.Char.ToUpper >> implode) s
 
+//Jonas' suggestion
+let toUpper1 (s:string) = 
+    // (List.map (fun c -> System.Char.ToUpper c) explode s) >> implode
+    explode >> List.map (fun c -> System.Char.ToUpper c) >> implode 
+    // but this one returns a function and not a value 
+    // - weren't we supposed to make it do the same as toUpper?
+
+
+
 // let toUpper2 (s:string) = failwith "not implemented"
-// let toUpper2 (s:string) = implode (explode s |> List.map(fun x -> (Char.ToUpper(x))));;
 // Allan's suggestion
 let toUpper2 (s:string) = s |> (implode << (explode >> List.map System.Char.ToUpper))
 
-
 //Peter's suggestion
 let toUpper2 (s:string) = s |> (implode << List.map System.Char.ToUpper << explode)
+
+//Jonas' suggestion
+let toUpper2 (s:string) =
+    explode s |> (implode << (List.map (fun c -> System.Char.ToUpper c)))
+
+
+
 
 
 // Exercise 4.4 - palindrome - treating empty strings as palindromes too.
@@ -60,27 +77,14 @@ let palindrome (s:string) =
     if forward = backward 
     then true
     else false
-=======
-// let toUpper (s:string) = 
-//     implode(explode s |> List.map (fun c -> System.Char.ToUpper c))
 
-let toUpper (s:string) = 
-    implode(List.map (fun c -> System.Char.ToUpper c) (explode s))
-
-// explode >> map >> implode
-let toUpper1 (s:string) = 
-    // (List.map (fun c -> System.Char.ToUpper c) explode s) >> implode
-    explode >> List.map (fun c -> System.Char.ToUpper c) >> implode 
-    // but this one returns a function and not a value 
-    // - weren't we supposed to make it do the same as toUpper?
-    
-let toUpper2 (s:string) =
-    explode s |> (implode << (List.map (fun c -> System.Char.ToUpper c)))
-
-// Exercise 4.4 - palindrome - treating empty strings as palindromes too.
+//Jonas' suggestion
 // not a recursive implementation, but a simple and effective one
 let palindrome (s:string) = (s = (explode s |> implodeRev))
->>>>>>> cd9f4aed6971d229086a832974092dc9ddc1f786:FP-04-Jonas.fsx
+
+
+
+
 
 // Exercise 4.5 - ack
 // let rec ack t = failwith "not implemented"
