@@ -23,6 +23,10 @@ let implodeRev (list:list<char>) =
 
 // Exercise 4.3 - toUpper
 // let toUpper (s:string) = failwith "not implemented"
+
+//Jonas' One-liner
+let toUpper (s:string) = implode(List.map (fun c -> System.Char.ToUpper c) (explode s))
+
 //Allan's suggestion:
 let toUpper (s:string) = 
     let d = explode s
@@ -32,13 +36,18 @@ let toUpper (s:string) =
 
 // explode >> map >> implode
 // let toUpper1 (s:string) = failwith "not implemented"
-// let toUpper2 (s:string) = implode (explode s |> List.map(fun x -> (Char.ToUpper(x))));;
+
 //Allan's suggestion
 let toUpper1 (s:string) = (explode >> List.map System.Char.ToUpper >> implode) s
 
 // let toUpper2 (s:string) = failwith "not implemented"
+// let toUpper2 (s:string) = implode (explode s |> List.map(fun x -> (Char.ToUpper(x))));;
 // Allan's suggestion
 let toUpper2 (s:string) = s |> (implode << (explode >> List.map System.Char.ToUpper))
+
+
+//Peter's suggestion
+let toUpper2 (s:string) = s |> (implode << List.map System.Char.ToUpper << explode)
 
 
 // Exercise 4.4 - palindrome - treating empty strings as palindromes too.
