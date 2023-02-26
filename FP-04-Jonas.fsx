@@ -43,7 +43,13 @@ let toUpper2 (s:string) =
 let palindrome (s:string) = (s = (explode s |> implodeRev))
 
 // Exercise 4.5 - ack
-let rec ack t = failwith "not implemented"
+let rec ack (m, n) =
+    match (m,n) with
+    | (0,n) when n > 0          -> n + 1
+    | (m,0) when m > 0          -> ack ((m-1),1)
+    | (m,n) when m > 0 && n > 0 -> ack ((m-1),(ack (m, (n-1))))
+    | _                         -> failwith "poop" // this is to cover all cases
+
     // ack(3, 11) = 16381
 
 // Exercise 4.6 - time
