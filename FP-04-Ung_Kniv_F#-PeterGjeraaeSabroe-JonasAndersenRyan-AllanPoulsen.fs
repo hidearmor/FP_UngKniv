@@ -118,6 +118,39 @@ let downto1 f n e =
     else
         e
 
+
+//-----------------------------------------------------------------
+
+// Jonas 1: succinct version I made from the info in "fundet på nettet" 
+let downto1 f n e = function
+    | n when n <= 0 -> e
+    | _ ->  List.fold f [n..1] e
+
+// Jonas 2: version with an inner recursive call
+// note that I first declare the inner function THEN I do the if the else
+// because doing pattern matching on downto1 and then just having the manualFoldingBaby
+// in the second clause will not actually return anything (see out-commented version below)
+let downto1 f n e = 
+    // we define an inner recursive function that runs the functionality on a list
+    let rec manualFoldingBaby l =  
+        match l with
+        | [] -> e
+        | x::xs -> f x (manualFoldingBaby xs)
+    if n <= 0 then e else manualFoldingBaby [1..n] 
+    // we run some actual code: e if n <= 0 and 
+    // else we feed the desired list to our function manualFoldingBaby
+
+// Jonas 2: the version not returning anything (had GPT help me with why)
+// let downto1 f n e = function 
+//     | n when n <= 0 -> e
+//     | _ -> 
+//         let l = [1..n]
+//         let rec dt2 = 
+//             match l with
+//             | x::xs -> f x (dt2 xs)
+
+//-----------------------------------------------------------------
+
 // Også taget fra nettet:
 let fact n =  downto1 (*) n 1
 
