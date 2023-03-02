@@ -104,55 +104,43 @@ let timeArg1 f a = time (fun g -> f a)
 
 //-----
 // Exercise 4.7 - HR 5.4 - downTo2 f n e
-//Peters suggestion - ikke helt korrekt. Jeg ved ikke hvordan man skal lave den recursive.
-let rec downto1 f (n, e) = 
+
+// Official version:
+let downto1 f n e =
     match n with
     | n when n <= 0 -> e
-    | n when n > 0 -> downto1(n-1 e)
+    | _ ->  List.foldBack f [1..n] e
 
-//Fundet på nettet:
-let downto1 f n e =
-    if n > 0 then
-        let items = [1..n]
-        List.foldBack f items e
-    else
-        e
-
-
-//-----------------------------------------------------------------
-
-// Jonas 1: succinct version I made from the info in "fundet på nettet" 
-let downto1 f n e = function
-    | n when n <= 0 -> e
-    | _ ->  List.fold f [n..1] e
-
-// Jonas 2: version with an inner recursive call
+            // Alternative version 1: with an inner recursive call
 // note that I first declare the inner function THEN I do the if the else
 // because doing pattern matching on downto1 and then just having the manualFoldingBaby
 // in the second clause will not actually return anything (see out-commented version below)
-let downto1 f n e = 
-    // we define an inner recursive function that runs the functionality on a list
-    let rec manualFoldingBaby l =  
-        match l with
-        | [] -> e
-        | x::xs -> f x (manualFoldingBaby xs)
-    if n <= 0 then e else manualFoldingBaby [1..n] 
+
+// let downto1 f n e = 
+//     // we define an inner recursive function that runs the functionality on a list
+//     let rec manualFoldingBaby l =  
+//         match l with
+//         | [] -> e
+//         | x::xs -> f x (manualFoldingBaby xs)
+//     if n <= 0 then e else manualFoldingBaby [1..n] 
+    
     // we run some actual code: e if n <= 0 and 
     // else we feed the desired list to our function manualFoldingBaby
 
-// Jonas 2: the version not returning anything (had GPT help me with why)
-// let downto1 f n e = function 
-//     | n when n <= 0 -> e
-//     | _ -> 
-//         let l = [1..n]
-//         let rec dt2 = 
-//             match l with
-//             | x::xs -> f x (dt2 xs)
+
+            //Alternative version 2::
+// let downto1 f n e =
+//     if n > 0 then
+//         let items = [1..n]
+//         List.foldBack f items e
+//     else
+//         e
 
 //-----------------------------------------------------------------
 
-// Også taget fra nettet:
-let fact n =  downto1 (*) n 1
+let fact n =  
+    if n >= 0 then downto1 (*) n 1
+    else failwith "fact only works on positive numbers"
 
 
 //Peters bud på den sidste - heller ikke helt korrekt. 
