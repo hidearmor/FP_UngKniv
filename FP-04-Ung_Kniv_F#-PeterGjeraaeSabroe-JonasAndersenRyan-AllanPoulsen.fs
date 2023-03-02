@@ -142,6 +142,18 @@ let fact n =
     if n >= 0 then downto1 (*) n 1
     else failwith "fact only works on positive numbers"
 
+let rec fact2 = function
+    | 0 -> 1
+    | n when n > 0 -> n * fact(n-1)
+    | _ -> failwith "fact only works on positive numbers"
+
 
 //Peters bud på den sidste - heller ikke helt korrekt. 
-let buildList g n = downto1 g n []
+let buildList g n = 
+    let l = [1..n]
+    let rec action xs =
+        match xs with
+        |[] -> []
+        |x::xs -> (g x)::action xs
+    if n < 0 then failwith "insert positive integer, bruh"
+    else action l
