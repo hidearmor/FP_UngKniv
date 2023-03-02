@@ -106,10 +106,12 @@ let timeArg1 f a = time (fun g -> f a)
 // Exercise 4.7 - HR 5.4 - downTo2 f n e
 
 // Official version:
-let downto1 f n e =
+let downto1 f (n,e) =
+    let g = fun n e -> f(n,e) // we make f take a tuple by curring it
+    // let g n e = f(n,e) - a shorter way of writing the above line
     match n with
     | n when n <= 0 -> e
-    | _ ->  List.foldBack f [1..n] e
+    | _ ->  List.foldBack g [1..n] e
 
             // Alternative version 1: with an inner recursive call
 // note that I first declare the inner function THEN I do the if the else
@@ -138,9 +140,15 @@ let downto1 f n e =
 
 //-----------------------------------------------------------------
 
-let fact n =  
-    if n >= 0 then downto1 (*) n 1
-    else failwith "fact only works on positive numbers"
+// let fact n =  
+//     let t (x,y) = 
+//     if n >= 0 then downto1 t (n,1)
+//     else failwith "fact only works on positive numbers"
+
+let rec fact2 = function
+    | (1,e) -> e
+    | (n,e) -> fact2(n-1,e*n) 
+    // the recursive call is the outer most and thus is called first and that is good
 
 
 //Peters bud på den sidste - heller ikke helt korrekt. 
