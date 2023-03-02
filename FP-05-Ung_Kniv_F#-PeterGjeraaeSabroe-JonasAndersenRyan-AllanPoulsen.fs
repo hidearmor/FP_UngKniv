@@ -4,7 +4,22 @@ type 'a BinTree =
   | Node of 'a * 'a BinTree * 'a BinTree
 // 5.1
 // let inOrder...
+// The tree from the assignment
+type Tree = Leaf
+          | Node of int*Tree*Tree
 
+//The  function from the slides
+let intBinTree =
+    Node(43, Node(25, Node(56,Leaf, Leaf), Leaf),
+        Node(562, Leaf, Node(78, Leaf, Leaf)))
+
+//inOrder function. 
+let rec inOrder tree = 
+    match tree with 
+      Leaf -> []                            //<-- The input is a lead (ie and empty tree), no values to return
+    | Node(n, treeL, treeR) -> inOrder treeL @ [n] @ inOrder treeR; //<--First traverse the left tree, append (@) n to the list that comes 
+inOrder intBinTree                                                  //out of this (effectively a new list). Then traverse the right tree 
+                                                                    //Concatenate the lists uing @
 // 5.2
 // let mapInOrder...
 
