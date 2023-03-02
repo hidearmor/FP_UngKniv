@@ -111,6 +111,10 @@ let downto1 f n e =
     | n when n <= 0 -> e
     | _ ->  List.foldBack f [1..n] e
 
+// Frederiks version
+let rec downto3 f n e = 
+    if n <= 0 then e else f n (downto3 f (n-1) e)
+
             // Alternative version 1: with an inner recursive call
 // note that I first declare the inner function THEN I do the if the else
 // because doing pattern matching on downto1 and then just having the manualFoldingBaby
@@ -144,11 +148,10 @@ let fact n =
 
 let rec fact2 = function
     | 0 -> 1
-    | n when n > 0 -> n * fact(n-1)
+    | n when n > 0 -> n * fact2(n-1)
     | _ -> failwith "fact only works on positive numbers"
 
 
-//Peters bud på den sidste - heller ikke helt korrekt. 
 let buildList g n = 
     let l = [1..n]
     let rec action xs =
@@ -157,3 +160,20 @@ let buildList g n =
         |x::xs -> (g x)::action xs
     if n < 0 then failwith "insert positive integer, bruh"
     else action l
+
+// ny version som er en kombi af det andet
+let buildlistYes g n =
+    let f x xs = (g x)::xs
+    downto1 f n []
+
+// frederiks version
+let buildList2 g n = List.rev (downto1 (fun x xs -> (g x)::xs) n [])
+    // return a reverse version of:
+        // the list returned from downto1
+            // Taking arguments:
+                // 1: a function taking two arguments (head & tail)
+                    //applying the function g on the head
+                // 2: n, the integer
+                // 3: an empty list -> where we start
+    // returns a list because we have put in the empty list in the end
+    // can use downto1 because (fun x xs -> (g x) :: xs) takes two arguments
