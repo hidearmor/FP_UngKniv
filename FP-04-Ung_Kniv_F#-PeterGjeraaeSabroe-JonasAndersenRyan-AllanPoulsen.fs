@@ -105,6 +105,32 @@ let timeArg1 f a = time (fun g -> f a)
 //-----
 // Exercise 4.7 - HR 5.4 - downTo2 f n e
 
+
+//----------------------
+//Allan's suggestion
+//The factorial function from the assignment.
+let rec fact4 = function
+    | 0 -> 1
+    | n when n > 0 -> n * fact4(n-1)
+    | _ -> failwith "only works on positives, man!"
+
+let downto1 g n e =
+    match n with
+    | n when n <=0 -> e
+    | _ -> List.foldBack g [1..n] e
+
+let buildList g n = downto1 (fun x xs -> g x :: xs) n []
+//Above does the following
+// 1. "buildList fact 5;;" applies a function (eg. fact) and a number (eg. 5) 
+// 2. (fun x xs -> g x :: xs)  takes the integer x from xs and applies the function g (ie. eg. fact) to the integer
+//    and then adds it to the empty list. this continues until xs is empty.
+// 3. the downto1 function "unfolds" the list
+// 4. as such the "buildList g n" takes a function and 5 value, applies the downto1 function to the function described in 2) above.
+//---------------------------    
+
+
+
+
 // Official version:
 let downto1 f (n,e) =
     let g = fun n e -> f(n,e) // we make f take a tuple by curring it
