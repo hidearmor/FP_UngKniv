@@ -16,12 +16,23 @@ let intBinTree =
 //inOrder function. 
 let rec inOrder tree = 
     match tree with 
-      Leaf -> []                            //<-- The input is a lead (ie and empty tree), no values to return
+      Leaf -> []                            //<-- The input is a leaf (ie and empty tree), no values to return
     | Node(n, treeL, treeR) -> inOrder treeL @ [n] @ inOrder treeR; //<--First traverse the left tree, append (@) n to the list that comes 
 inOrder intBinTree                                                  //out of this (effectively a new list). Then traverse the right tree 
                                                                     //Concatenate the lists uing @
 // 5.2
 // let mapInOrder...
+
+//Allan's suggestions below -------------.
+let rec mapInOrder f tree =         //<-- take a function f
+    match tree with                 
+    | Leaf -> Leaf                  //<-- if you are a leaf, then remain a leaf
+    | Node(n, treeL, treeR) -> Node(f n, mapInOrder f treeL, mapInOrder f treeR) //<-- Apply the function to all the nodes.
+//-----------------
+
+// mapInOrder intBinTree
+
+
 
 // 5.3
 // let foldInOrder...
