@@ -16,7 +16,7 @@ let intBinTree =
 //inOrder function. 
 let rec inOrder tree = 
     match tree with 
-      Leaf -> []                            //<-- The input is a leaf (ie and empty tree), no values to return
+      Leaf -> []                            //<-- The input is a leaf (ie an empty tree), no values to return
     | Node(n, treeL, treeR) -> inOrder treeL @ [n] @ inOrder treeR; //<--First traverse the left tree, append (@) n to the list that comes 
 inOrder intBinTree                                                  //out of this (effectively a new list). Then traverse the right tree 
                                                                     //Concatenate the lists uing @
@@ -31,11 +31,29 @@ let rec mapInOrder f tree =         //<-- take a function f
 //-----------------
 
 // mapInOrder intBinTree
-
+//REMEMBER TO PUT IN EXPLANATION OF DIFF BTW MAPINORDER AND MAPPOSTORDER!!
 
 
 // 5.3
 // let foldInOrder...
+// Allan's suggestion based on exercise 4.2 and 4.3 ---------------
+// 1. the "inOrder tree" element of the sentence produces a list, using the inORder function above
+// 2. the "|>" pipes the list into the function
+// 3. List.fold is a library function (we used it in exercise 4.2)
+// 4. "(fun x xs -> f xs x) x" does the following (based on exercise 4.2): a) takes the arguments
+//      x and xs, where x is the current element being piped into the function
+//      and xs is the accumulated value is the list is being piped into
+//      the function
+
+let foldInOrder f xs tree = 
+    inOrder tree |> List.fold (fun xs x -> f x xs) xs
+
+//For some reason I cannot make it work with the floatTree, but it works with binTree (below)
+//so likely I just made some mistake in the floatTree definition
+foldInOrder (fun n a -> a + n) 0 intBinTree
+//-------------
+
+
 
 //5.4 + 5.5
 type aExp =                     (* Arithmetical expressions *)
