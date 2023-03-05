@@ -5,8 +5,13 @@ type 'a BinTree =
 // 5.1
 // let inOrder...
 // The tree from the assignment
-type Tree = Leaf
-          | Node of int*Tree*Tree
+
+// generic version of tree for float compability
+type Tree<'a> = Leaf
+                | Node of 'a*Tree<'a>*Tree<'a>
+
+// type Tree = Leaf
+//           | Node of int*Tree*Tree
 
 //The  function from the slides
 let intBinTree =
@@ -50,7 +55,12 @@ let foldInOrder f xs tree =
 
 //For some reason I cannot make it work with the floatTree, but it works with binTree (below)
 //so likely I just made some mistake in the floatTree definition
-foldInOrder (fun n a -> a + n) 0 intBinTree
+foldInOrder (fun n a -> a + n) 0 intBinTree;;
+
+let floatBinTree = Node(43.0,Node(25.0, 
+    Node(56.0,Leaf, Leaf), Leaf), Node(562.0, Leaf, Node(78.0, Leaf,Leaf)))
+
+foldInOrder (fun n a -> a + n) 0.0 floatBinTree;;
 //-------------
 
 
