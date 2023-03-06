@@ -8,6 +8,8 @@ let rec explode2 (s:string) =
     | ""  -> []
     | _ -> s.Chars(0)::explode2(s.Remove(0,1))  //<-- s.Char(0) extracts first character, s.Remove(0,1) returns remaining string
 
+//-----
+ 
 
 // Exercise 4.2 - implode - char list to string
 //Returns string build from list of char in same order as list, using foldback
@@ -24,6 +26,8 @@ let implodeRev (list:list<char>) =
         list
 
 
+//-----
+ 
 
 // Exercise 4.3 - toUpper
 //Here we explode s, using the above function. This list is fed into fun c -> System.Char.Upper which maps  it to a new list, that is then imploded.
@@ -51,8 +55,11 @@ let toUpper2 (s:string) = s |> (implode << List.map System.Char.ToUpper << explo
 // let toUpper2 (s:string) =
 //     explode s |> (implode << (List.map (fun c -> System.Char.ToUpper c)))
 
+//-----
+ 
 
 // Exercise 4.4 - palindrome - treating empty strings as palindromes too.
+
 // Returns a boolean that is a comparison of the reesults of toUpper1 of s and the "backward" version of s
 // that comes through implodeRev
 let palindrome (s:string) = 
@@ -69,8 +76,11 @@ let palindrome (s:string) =
 // Alternative version 2 (case sensitive)
 // let palindrome (s:string) =  s = (s |> (implode << List.rev << explode))
 
+//-----
+ 
 
 // Exercise 4.5 - ack
+
 // recursive ackermann function as per assignment with the patterm guards (when) that n and m must be higher than zero
 let rec ack t = 
     match t with
@@ -87,7 +97,10 @@ let rec ack t =
   
 // ack(3, 11) = 16381
 
+//-----
+ 
 // Exercise 4.6 - time
+
 // Function as per assignment:
 let time f =
     let start = System.DateTime.Now in
@@ -103,11 +116,9 @@ let time f =
 let timeArg1 f a = time (fun g -> f a)
 
 //-----
+ 
 // Exercise 4.7 - HR 5.4 - downTo2 f n e
 
-
-//----------------------
-//Allan's suggestion
 //The factorial function from the assignment.
 let rec fact4 = function
     | 0 -> 1
@@ -122,60 +133,39 @@ let downto1 g n e =
 let buildList g n = downto1 (fun x xs -> g x :: xs) n []
 //Above does the following
 // 1. "buildList fact 5;;" applies a function (eg. fact) and a number (eg. 5) 
-// 2. (fun x xs -> g x :: xs)  takes the integer x from xs and applies the function g (ie. eg. fact) to the integer
-//    and then adds it to the empty list. this continues until xs is empty.
+// 2. (fun x xs -> g x :: xs)  takes the integer x from xs and applies the function g 
+    //(ie. eg. fact) to the integer
+    // and then adds it to the empty list. this continues until xs is empty.
 // 3. the downto1 function "unfolds" the list
-// 4. as such the "buildList g n" takes a function and 5 value, applies the downto1 function to the function described in 2) above.
+// 4. as such the "buildList g n" takes a function and 5 value, applies the 
+    //downto1 function to the function described in 2) above.
+
 //---------------------------    
 
+// ALTERNATIVE VERSIONS FOR STUDYING FOR EXAM
 
+// let buildList g n = 
+//     let l = [1..n]
+//     let rec action xs =
+//         match xs with
+//         |[] -> []
+//         |x::xs -> (g x)::action xs
+//     if n < 0 then failwith "insert positive integer, bruh"
+//     else action l
 
+// ny version som er en kombi af det andet
+// let buildlistYes g n =
+//     let f x xs = (g x)::xs
+//     downto1 f n []
 
-// Official version:
-let downto1 f (n,e) =
-    let g = fun n e -> f(n,e) // we make f take a tuple by curring it
-    // let g n e = f(n,e) - a shorter way of writing the above line
-    match n with
-    | n when n <= 0 -> e
-    | _ ->  List.foldBack g [1..n] e
-
-            // Alternative version 1: with an inner recursive call
-// note that I first declare the inner function THEN I do the if the else
-// because doing pattern matching on downto1 and then just having the manualFoldingBaby
-// in the second clause will not actually return anything (see out-commented version below)
-
-// let downto1 f n e = 
-//     // we define an inner recursive function that runs the functionality on a list
-//     let rec manualFoldingBaby l =  
-//         match l with
-//         | [] -> e
-//         | x::xs -> f x (manualFoldingBaby xs)
-//     if n <= 0 then e else manualFoldingBaby [1..n] 
-    
-    // we run some actual code: e if n <= 0 and 
-    // else we feed the desired list to our function manualFoldingBaby
-
-
-            //Alternative version 2::
-// let downto1 f n e =
-//     if n > 0 then
-//         let items = [1..n]
-//         List.foldBack f items e
-//     else
-//         e
-
-//-----------------------------------------------------------------
-
-// let fact n =  
-//     let t (x,y) = 
-//     if n >= 0 then downto1 t (n,1)
-//     else failwith "fact only works on positive numbers"
-
-let rec fact2 = function
-    | (1,e) -> e
-    | (n,e) -> fact2(n-1,e*n) 
-    // the recursive call is the outer most and thus is called first and that is good
-
-
-//Peters bud på den sidste - heller ikke helt korrekt. 
-let buildList g n = downto1 g n []
+// yet another version
+// let buildList2 g n = List.rev (downto1 (fun x xs -> (g x)::xs) n [])
+    // return a reverse version of:
+        // the list returned from downto1
+            // Taking arguments:
+                // 1: a function taking two arguments (head & tail)
+                    //applying the function g on the head
+                // 2: n, the integer
+                // 3: an empty list -> where we start
+    // returns a list because we have put in the empty list in the end
+    // can use downto1 because (fun x xs -> (g x) :: xs) takes two arguments
