@@ -80,16 +80,17 @@ type bExp =                     (* Boolean expressions *)
     | Lt of aExp * aExp         (* less than *)
     | Neg of bExp               (* negation *)
     | Con of bExp * bExp        (* conjunction *)
-(*
+
 type stm =                      // statements
     | Ass of string * aExp      // assignment
     | Skip
     | Seq of stm * stm          // sequential composition
     | ITE of bExp * stm * stm   // if-then-else
     | While of bExp * stm       // while
-    | IT of ...                 // if-then
-    | RU of ...                 //  repeat until
-*)
+    | IT of bExp * stm          // if-then
+    | RU of stm * bExp          //  repeat until
+
+// er s her vores environment ?
 let rec A a s =
     match a with
     | N n -> n
@@ -98,11 +99,15 @@ let rec A a s =
     | Mul(a1, a2) -> A a1 s * A a2 s
     | Sub(a1, a2) -> A a1 s - A a2 s;;
 
-(*
 let rec B b s =
 match b with
     | TT -> true
-    | ....
+    | FF -> false
+    | Eq(a1, a2) -> A a1 s = A a2 s
+    | Lt(a1, a2) -> A a1 s < A a2 s
+    | Neg(b1) -> if B b1 s = true then false else true 
+    | Con(b1, b2) -> 
+        if B b1 s = true && B b2 s = true then true else false
 
 let rec I stm s =
     match stm with
@@ -114,6 +119,7 @@ let rec I stm s =
     | IT...
     | RU...
 
+(*
 // Example 0
 let stmt0 = 
 // Example 1
