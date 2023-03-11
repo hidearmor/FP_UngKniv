@@ -119,18 +119,22 @@ let rec I stm s =
     | ITE(b,stm1,stm2)  -> if B b s then I stm1 s else I stm2 s
     | While(b, stm)     -> if B b s then ((I stm s) |> I (While(b, stm))) else (I Skip s)
     | IT(b, stm1)       -> if B b s then I stm1 s else s
-    | RU(stm1, b)       -> if (B (Neg(b)) s) then ((I stm s) |> I (RU(stm, b))) else (I Skip s);;
+    | RU(stm1, b)       -> if (B (Neg(b)) s) then ((I stm s) |> I (RU(stm, b))) else (I Skip s)
 
-(*
+
 // Example 0
-let stmt0 = 
+let stmt0 = While((Eq((N 2), (N 3))), Skip)
+let state0 = Map.empty
+I stmt0 state0 //this is so lol
 // Example 1
-let stmt1 = ...
-let state1 = ...
+let stmt1 = ITE(FF, Ass(("yes"), Mul(N(1),N(3))), Skip)
+let state1 = Map.empty |> Map.add "yo" (A (Mul(N 4, N 6)) Map.empty)
+I stmt1 state1
 // Example 2
-let stmt2 = ...
-let state2= ...
-// Example 3
+let stmt2 = Ass("your mom", Mul(N 3, N 5))
+let state2 = state1 |> Map.add "state2" (A (N 3) state0)
+I stmt2 state2
+// Example 3d
 let stmt3 = ...
 let state3 = ...
 // Example 4
@@ -139,5 +143,4 @@ let state4 = ...
 // Example 5
 let stmt5 = ...
 let state5 = ...
-*)
 
