@@ -111,13 +111,15 @@ match b with
 
 let rec I stm s =
     match stm with
-    | Ass(x,a) -> update x ( ... ) s
-    | Skip -> ...
-    | Seq(stm1, stm2) -> ...
-    | ITE(b,stm1,stm2) -> ...
-    | While(b, stm) -> ... ;;
-    | IT...
-    | RU...
+    | Ass(x,a) -> Map.add x (A a s) s // vi lægger en ny value ind med en string og et tal
+    | Skip -> s // den her bruger vi når vi skal returnere det vi allerede har, som: I Skip s
+    | Seq(stm1, stm2) -> I stm1 s |> I stm2 // fordi det første returner et state kan vi pipe det
+                    // der er ikke s på nr. 2 fordi det er et env vi piper ind i nr. 2
+    | ITE(b,stm1,stm2) -> if B b s then I stm1 s else I stm2 s
+    | While(b, stm) -> if B b s then ((I stm s) |> I (While(b, stm))) else (I Skip s)
+    | IT(b, stm1) -> if B b s then I stm1 s else s
+    | RU(stm1, b) -> I (Neg(B b s) |> While(s)) s
+
 
 (*
 // Example 0
