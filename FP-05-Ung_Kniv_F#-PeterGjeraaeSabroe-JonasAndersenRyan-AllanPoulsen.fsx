@@ -118,9 +118,17 @@ let rec I stm s =
         // fordi det første returner et state kan vi pipe det der er ikke s på nr. 2 fordi det er et env vi piper ind i nr. 2
     | ITE(b,stm1,stm2)  -> if B b s then I stm1 s else I stm2 s
     | While(b, stm)     -> if B b s then ((I stm s) |> I (While(b, stm))) else (I Skip s)
+                                    //"if B b s then ((I stm s) |>"  --> If b is true then pipe the stm from s into the following 
+                                    //"|> I (While(b, stm))"         --> take the statement that is being piped into you and recursively call 
+                                    // itself with stm and the original environment s (as long as b is  true)
+                                    // "else (I Skip s)" otherwise Skip
+
     | IT(b, stm1)       -> if B b s then I stm1 s else s
     | RU(stm1, b)       -> if (B (Neg(b)) s) then ((I stm s) |> I (RU(stm, b))) else (I Skip s)
-
+                                    //"if B Neg(b) s then ((I stm s) |>"  --> If b is negative then pipe the stm from s into the following 
+                                    //"|> I (While(b, stm))"         --> take the statement that is being piped into you and recursively call 
+                                    // itself with stm and the original evironment s (as long as b is true)
+                                    // "else (I Skip s)" otherwise Skip
 
 // Example 0
 let stmt0 = While((Eq((N 2), (N 3))), Skip)
@@ -135,11 +143,13 @@ let stmt2 = Ass("your mom", Mul(N 3, N 5))
 let state2 = state1 |> Map.add "state2" (A (N 3) state0)
 I stmt2 state2
 // Example 3d
-let stmt3 = ...
-let state3 = ...
+let stmt3 = IT(Lt(N 7, N 8), Seq(Ass("Young knife", Sub(N 10, N 1)), Ass("Even younger knife", Sub(N 10, N 4))))
+let state3 = state2 |> Map.add "state3" (A (N 9) state1)
+I stmt3 state3
 // Example 4
-let stmt4 = ...
-let state4 = ...
+let stmt4 = Seq(IT(Con(TT, TT), Ass("k", N 1)), IT(Con(TT, TT), Ass("to-the nife", N 4)))
+let state4 = state3 |> Map.add "state4" (A (N 11) state3)
+I stmt4 state4
 // Example 5
 let stmt5 = ...
 let state5 = ...
