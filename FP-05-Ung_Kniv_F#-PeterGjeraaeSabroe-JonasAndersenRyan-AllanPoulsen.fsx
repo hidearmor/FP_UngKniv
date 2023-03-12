@@ -33,11 +33,15 @@ let rec mapInOrder f tree =         //<-- take a function f
     match tree with                 
     | Leaf -> Leaf                  //<-- if you are a leaf, then remain a leaf
     | Node(n, treeL, treeR) -> Node(f n, mapInOrder f treeL, mapInOrder f treeR) //<-- Apply the function to all the nodes.
+
+
+//mapinorder vs mappost explanation:
+// mapinorder traverses the binary tree from left to right and applies the function to each node in that order (ie. first left subtree, then current node, then right subtree). 
+// The structure of the tree does not change as such but the nodes will have the function applied to them
+// The mappostorder will apply the function in the order of left subtree, then right subtree then current node. Again, no changes to struccture of the tree, but the nodes will have the 
+// but the funciton will be applied.
+
 //-----------------
-
-// mapInOrder intBinTree
-//REMEMBER TO PUT IN EXPLANATION OF DIFF BTW MAPINORDER AND MAPPOSTORDER!!
-
 
 // 5.3
 // let foldInOrder...
@@ -151,6 +155,7 @@ let stmt4 = Seq(IT(Con(TT, TT), Ass("k", N 1)), IT(Con(TT, TT), Ass("to-the nife
 let state4 = state3 |> Map.add "state4" (A (N 11) state3)
 I stmt4 state4
 // Example 5
-let stmt5 = ...
-let state5 = ...
+let stmt5 = RU(Ass("YKF#", Add(V "YKF#", N 1)), Lt(V "YKF#", N 5))
+let state5 = state4 |> Map.add "YKF#" 0
+I stmt5 state5
 
