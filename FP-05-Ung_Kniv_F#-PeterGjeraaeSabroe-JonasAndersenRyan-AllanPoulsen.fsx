@@ -3,9 +3,6 @@ type 'a BinTree =
     Leaf
   | Node of 'a * 'a BinTree * 'a BinTree
 // 5.1
-// let inOrder...
-// The tree from the assignment
-
 // generic version of tree for float compability
 type Tree<'a> = Leaf
                 | Node of 'a*Tree<'a>*Tree<'a>
@@ -25,10 +22,10 @@ let rec inOrder tree =
     | Node(n, treeL, treeR) -> inOrder treeL @ [n] @ inOrder treeR; //<--First traverse the left tree, append (@) n to the list that comes 
 inOrder intBinTree                                                  //out of this (effectively a new list). Then traverse the right tree 
                                                                     //Concatenate the lists uing @
-// 5.2
-// let mapInOrder...
 
-//Allan's suggestions below -------------.
+// -----------------
+
+// 5.2
 let rec mapInOrder f tree =         //<-- take a function f
     match tree with                 
     | Leaf -> Leaf                  //<-- if you are a leaf, then remain a leaf
@@ -38,14 +35,13 @@ let rec mapInOrder f tree =         //<-- take a function f
 //mapinorder vs mappost explanation:
 // mapinorder traverses the binary tree from left to right and applies the function to each node in that order (ie. first left subtree, then current node, then right subtree). 
 // The structure of the tree does not change as such but the nodes will have the function applied to them
-// The mappostorder will apply the function in the order of left subtree, then right subtree then current node. Again, no changes to struccture of the tree, but the nodes will have the 
+// The mappostorder will apply the function in the order of left subtree, then right subtree then current node. Again, no changes to structure of the tree, but the nodes will have the 
 // but the funciton will be applied.
 
 //-----------------
 
 // 5.3
-// let foldInOrder...
-// Allan's suggestion based on exercise 4.2 and 4.3 ---------------
+// Based on exercise 4.2 and 4.3:
 // 1. the "inOrder tree" element of the sentence produces a list, using the inORder function above
 // 2. the "|>" pipes the list into the function
 // 3. List.fold is a library function (we used it in exercise 4.2)
@@ -57,17 +53,14 @@ let rec mapInOrder f tree =         //<-- take a function f
 let foldInOrder f xs tree = 
     inOrder tree |> List.fold (fun xs x -> f x xs) xs
 
-//For some reason I cannot make it work with the floatTree, but it works with binTree (below)
-//so likely I just made some mistake in the floatTree definition
 foldInOrder (fun n a -> a + n) 0 intBinTree;;
 
 let floatBinTree = Node(43.0,Node(25.0, 
     Node(56.0,Leaf, Leaf), Leaf), Node(562.0, Leaf, Node(78.0, Leaf,Leaf)))
 
 foldInOrder (fun n a -> a + n) 0.0 floatBinTree;;
-//-------------
 
-
+//------------------
 
 //5.4 + 5.5
 type aExp =                     (* Arithmetical expressions *)
@@ -94,7 +87,7 @@ type stm =                      // statements
     | IT of bExp * stm          // if-then
     | RU of stm * bExp          //  repeat until
 
-// er s her vores environment ?
+
 let rec A a s =
     match a with
     | N n           -> n
@@ -113,7 +106,6 @@ let rec B b s =
     | Con(b1, b2)   -> 
         if B b1 s = true && B b2 s = true then true else false
 
-// Jonas Bud
 let rec I stm s =
     match stm with
     | Ass(x,a)          -> Map.add x (A a s) s      // vi lægger en ny value ind med en string og et tal
@@ -130,14 +122,14 @@ let rec I stm s =
     | IT(b, stm1)       -> if B b s then I stm1 s else s
     | RU(stm1, b)       -> if (B (Neg(b)) s) then ((I stm s) |> I (RU(stm, b))) else (I Skip s)
                                     //"if B Neg(b) s then ((I stm s) |>"  --> If b is negative then pipe the stm from s into the following 
-                                    //"|> I (While(b, stm))"         --> take the statement that is being piped into you and recursively call 
+                                    //"|> I (While(b, stm))"  --> take the statement that is being piped into you and recursively call 
                                     // itself with stm and the original evironment s (as long as b is true)
                                     // "else (I Skip s)" otherwise Skip
 
 // Example 0
 let stmt0 = While((Eq((N 2), (N 3))), Skip)
 let state0 = Map.empty
-I stmt0 state0 //this is so lol
+I stmt0 state0 
 // Example 1
 let stmt1 = ITE(FF, Ass(("yes"), Mul(N(1),N(3))), Skip)
 let state1 = Map.empty |> Map.add "yo" (A (Mul(N 4, N 6)) Map.empty)
@@ -159,3 +151,10 @@ let stmt5 = RU(Ass("YKF#", Add(V "YKF#", N 1)), Lt(V "YKF#", N 5))
 let state5 = state4 |> Map.add "YKF#" 0
 I stmt5 state5
 
+//Exercise 5.6
+// Explaining the inc(x), we would take the following actions:
+// 1. We would add inc(x) to aExp as a type aExp
+// 2. We would then add inc(x) to the function A a s as inc(x) -> A (Add((x), (N 1))) s
+//    this way it should be possible to use inc(x) in correspondance with the general structure,
+//    as it returns an aExp.
+//    Specifically Inc(x) would be applied to Ass in the interpreter function to ensure the incrementation in the state.
