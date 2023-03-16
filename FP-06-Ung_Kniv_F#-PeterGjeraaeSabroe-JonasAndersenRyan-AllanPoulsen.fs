@@ -37,7 +37,18 @@ type Instruction = | ADD | SUB | MULT | DIV | SIN
 
 // list operations & cons operator x::xs
 // type be like: intpInstr: Stack -> Instruction -> Stack 
-let intpInstr = 
+let intpInstr (stack: float list) (ins: Instruction) = 
+    match ins with
+    // stack -> x:s:xs (hvordan gør vi der her?)
+    | ADD -> 
+        match stack with
+        | x0::x1::xs -> (x0 + x1)::xs
+        | _ -> stack
+    | SUB -> 
+        match stack with
+        | x0::x1::xs -> (x0 - x1)::xs
+        | _ -> stack
+    
 
 // let intpProg  = 0
 
