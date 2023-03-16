@@ -29,8 +29,13 @@ inOrder intBinTree                                                  //out of thi
 let rec mapInOrder f tree =         //<-- take a function f
     match tree with                 
     | Leaf -> Leaf                  //<-- if you are a leaf, then remain a leaf
-    | Node(n, treeL, treeR) -> Node(f n, mapInOrder f treeL, mapInOrder f treeR) //<-- Apply the function to all the nodes.
+    // evaluer individuelt og put ind i node bagefter, så vi antid går med ventre træ FØR vi når til vores øverste node
+    | Node(n, treeL, treeR) -> 
+        let tl = mapInOrder f treeL
+        Node(f n, tl, mapInOrder f treeR)
+     //<-- Apply the function to all the nodes.
 
+// let print tree = mapInOrder (fun elem -> printfn "%A" elem; elem) tree 
 
 //mapinorder vs mappost explanation:
 // mapinorder traverses the binary tree from left to right and applies the function to each node in that order (ie. first left subtree, then current node, then right subtree). 
