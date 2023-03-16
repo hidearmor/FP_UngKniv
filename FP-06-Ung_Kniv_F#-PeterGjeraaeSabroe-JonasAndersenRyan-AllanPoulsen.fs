@@ -12,21 +12,36 @@ type Fexpr =
     | Log of Fexpr
     | Exp of Fexpr;;
 
-let fexprToString expr = failwith "not implemented"
+let rec fexprToString expr =
+    match expr with
+    | Const a -> string a
+    | X     -> "x"
+    | Add(a,b) -> (fexprToString a) + " " + (fexprToString b) + " +"
+    | Sub(a,b) -> (fexprToString a) + " " + (fexprToString b) + " -"
+    | Mul(a,b) -> (fexprToString a) + " " + (fexprToString b) + " *"
+    | Div(a,b) -> (fexprToString a) + " " + (fexprToString b) + " /"
+    | Sin a    -> (fexprToString a) + " sin"
+    | Cos a    -> (fexprToString a) + " cos"
+    | Log a    -> (fexprToString a) + " log"
+    | Exp a    -> (fexprToString a) + " exp"
+
+// fexprToString (Add(Const(1.0),Const(3.0)));;
 
 // 6.2 (HR 6.8)
-(*
+
+// stack is a list of floats
 type Stack = S of float list
-*)
+
 type Instruction = | ADD | SUB | MULT | DIV | SIN
                    | COS | LOG | EXP | PUSH of float
 
+// list operations & cons operator x::xs
+// type be like: intpInstr: Stack -> Instruction -> Stack 
+let intpInstr = 
 
-//let intpInstr ...
+// let intpProg  = 0
 
-//let intpProg ...
-
-//let trans ...
+// let trans = 0
 
 // 6.3 (HR 7.2)
-//type ComplexNumber ...
+//type ComplexNumber
