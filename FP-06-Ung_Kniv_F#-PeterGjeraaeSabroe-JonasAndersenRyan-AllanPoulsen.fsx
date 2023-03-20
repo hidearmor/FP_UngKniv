@@ -108,16 +108,36 @@ let rec intpProg2 (insElem: Instruction list) (myList: float list) =
                 | x0 :: x1 :: xs -> intpInstr S[x0; x1] ins :: intpProg2 insList xs
                 | _ -> []
         | _ -> []
-                
+
+// let rec intpProg3 (insElem: Instruction list) : float = 
+    let rec stackLoop (stack: Stack) (insElem: Instruction List) : float =
+        match insElem with
+            | [] -> match stack with
+                    | S [] -> failwith "Stakken er tom, maayn!"
+                    | S (x::_) -> x
+            | ins::insList -> let myStack = intpInstr stack ins 
+                                stackLoop myStack insList
+        stackLoop (S[]) insElem
+
+         
         
-//WORK IN PROGRESS
-let rec intpProg3 (insElem: Instruction list) (myList: float list) = 
-    match insElem with
-        | ins::insList ->
-            match myList with 
-                | x0 :: x1 :: xs -> intpInstr S[x0; x1] ins |> 
-                   
-                
+// Take list of instructions, returns float
+let intpProg4 (insElem: Instruction list) : float = 
+    let rec stackRec (stack: Stack) (prog: Instruction list) : float =  //<--recursively working our way through the stack and instruction list
+        match insElem with                                              //<--match on the instruction elements (ie. the isntruction list) one by one
+        | [] -> match stack with                                        //<--if the instruction list is empty...
+                | S [] -> failwith "Stakken er tom, maayn!"    //<--...then move on to the stack. if the stack is empty, the provide a message
+                | S (x::_) -> x                                         //<-- if the stack is not empty, then return the first element in the stack
+        | instr::rest -> let myStack = intpInstr stack instr    //<-- if the lidt of instructions are not empty, then define a stack (myStack) using the 
+                         stackRec myStack rest                              //intpInstr function declared above with the stack and instruction found as arguments
+    stackRec (S []) insElem                                               // Then run the stackRec inner function (loop) with the remaining stack (myStack) and the rest of the 
+    //instruction list as arguments. Finally: Call the stackRec with an empty stach S[] to execute the instructions and get to the top element of the stack
+    
+
+intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];;
+
+
+
   
 // let trans = 0
 
