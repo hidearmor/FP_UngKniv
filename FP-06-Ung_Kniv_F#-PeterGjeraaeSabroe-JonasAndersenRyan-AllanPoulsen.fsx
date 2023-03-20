@@ -43,7 +43,9 @@ type Instruction = | ADD | SUB | MULT | DIV | SIN
 // open type System.Math
 let intpInstr (S stack) (ins: Instruction) = 
     match ins with
-    // stack -> x:s:xs (hvordan gør vi der her?)
+    // stack -> x:s:xs How we do it: The type of parameter "stack" is S (whis is list of float)
+    // then we do our operations and pipe it into S, be cause S takes a list of float
+    // and that's exactly what we feed it
     | ADD -> 
         match stack with
         | x0::x1::xs -> (x0 + x1)::xs |> S
