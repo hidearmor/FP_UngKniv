@@ -79,10 +79,46 @@ let intpInstr (S stack) (ins: Instruction) =
         | x0::xs -> (System.Math.Exp(x0))::xs |> S
         | _ -> stack |> S
     | PUSH r -> r::stack |> S
-    
+
+//intpInstr S[4.0; 4.5; 6.0] ADD;;  
 
 // let intpProg  = 0
 
+//Kan godt tage en instruktion og eksekvere instruktionen på de to første i listen 
+let rec intpProg1 (insElem: Instruction list) (myList: float list) = 
+    match insElem with
+        | ins::insList ->
+            match myList with 
+                | x0 :: x1 :: xs -> intpInstr S[x0; x1], xs
+
+//Virker på samme måde med Stack
+let intpProg11 (insElem: Instruction list) (S stack)= 
+    match insElem with 
+        | ins::insList -> 
+            match stack with
+                | x0::x1::xs -> intpInstr S[x0; x1] ins, xs
+
+// Jeg har en følelse af, at strukturen skal være nogenlunde sådan her. Det virker dog ikke, da
+// den kune eksekverer instruktionen på de to første elementer, så rekursionen kører ikke 
+// Jeg mangler også at få hevet det øverste element us af stacken, så der kun afleveres en float:
+let rec intpProg2 (insElem: Instruction list) (myList: float list) = 
+    match insElem with
+        | ins::insList ->
+            match myList with 
+                | x0 :: x1 :: xs -> intpInstr S[x0; x1] ins :: intpProg2 insList xs
+                | _ -> []
+        | _ -> []
+                
+        
+//WORK IN PROGRESS
+let rec intpProg3 (insElem: Instruction list) (myList: float list) = 
+    match insElem with
+        | ins::insList ->
+            match myList with 
+                | x0 :: x1 :: xs -> intpInstr S[x0; x1] ins |> 
+                   
+                
+  
 // let trans = 0
 
 // 6.3 (HR 7.2)
