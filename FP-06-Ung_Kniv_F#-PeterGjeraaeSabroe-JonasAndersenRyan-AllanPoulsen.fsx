@@ -110,14 +110,14 @@ let rec intpProg2 (insElem: Instruction list) (myList: float list) =
         | _ -> []
 
 // let rec intpProg3 (insElem: Instruction list) : float = 
-    let rec stackLoop (stack: Stack) (insElem: Instruction List) : float =
-        match insElem with
-            | [] -> match stack with
-                    | S [] -> failwith "Stakken er tom, maayn!"
-                    | S (x::_) -> x
-            | ins::insList -> let myStack = intpInstr stack ins 
-                                stackLoop myStack insList
-        stackLoop (S[]) insElem
+    // let rec stackLoop (stack: Stack) (insElem: Instruction List) : float =
+    //     match insElem with
+    //         | [] -> match stack with
+    //                 | S [] -> failwith "Stakken er tom, maayn!"
+    //                 | S (x::_) -> x
+    //         | ins::insList -> let myStack = intpInstr stack ins 
+    //                             stackLoop myStack insList
+    //     stackLoop (S[]) insElem
 
          
         
