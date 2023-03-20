@@ -37,6 +37,8 @@ type Instruction = | ADD | SUB | MULT | DIV | SIN
 
 // list operations & cons operator x::xs
 // type be like: intpInstr: Stack -> Instruction -> Stack 
+
+// open type System.Math
 let intpInstr (stack: float list) (ins: Instruction) = 
     match ins with
     // stack -> x:s:xs (hvordan gør vi der her?)
@@ -47,6 +49,30 @@ let intpInstr (stack: float list) (ins: Instruction) =
     | SUB -> 
         match stack with
         | x0::x1::xs -> (x0 - x1)::xs
+        | _ -> stack
+    | MULT -> 
+        match stack with
+        | x0::x1::xs -> (x0 * x1)::xs
+        | _ -> stack
+    | DIV -> 
+        match stack with
+        | x0::x1::xs -> (x0 / x1)::xs
+        | _ -> stack
+    | SIN -> 
+        match stack with
+        | x0::xs -> (System.Math.Sin(x0))::xs
+        | _ -> stack
+    | COS -> 
+        match stack with
+        | x0::xs -> (System.Math.Cos(x0))::xs
+        | _ -> stack
+    | LOG -> 
+        match stack with
+        | x0::xs -> (System.Math.Log(x0))::xs
+        | _ -> stack
+    | EXP -> 
+        match stack with
+        | x0::xs -> (System.Math.Exp(x0))::xs
         | _ -> stack
     
 
