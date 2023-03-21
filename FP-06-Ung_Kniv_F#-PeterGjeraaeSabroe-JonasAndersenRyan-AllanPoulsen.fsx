@@ -83,44 +83,6 @@ let intpInstr (S stack) (ins: Instruction) =
 //intpInstr S[4.0; 4.5; 6.0] ADD;;  
 
 // let intpProg  = 0
-
-//Kan godt tage en instruktion og eksekvere instruktionen på de to første i listen 
-let rec intpProg1 (insElem: Instruction list) (myList: float list) = 
-    match insElem with
-        | ins::insList ->
-            match myList with 
-                | x0 :: x1 :: xs -> intpInstr S[x0; x1], xs
-
-//Virker på samme måde med Stack
-let intpProg11 (insElem: Instruction list) (S stack)= 
-    match insElem with 
-        | ins::insList -> 
-            match stack with
-                | x0::x1::xs -> intpInstr S[x0; x1] ins, xs
-
-// Jeg har en følelse af, at strukturen skal være nogenlunde sådan her. Det virker dog ikke, da
-// den kune eksekverer instruktionen på de to første elementer, så rekursionen kører ikke 
-// Jeg mangler også at få hevet det øverste element us af stacken, så der kun afleveres en float:
-let rec intpProg2 (insElem: Instruction list) (myList: float list) = 
-    match insElem with
-        | ins::insList ->
-            match myList with 
-                | x0 :: x1 :: xs -> intpInstr S[x0; x1] ins :: intpProg2 insList xs
-                | _ -> []
-        | _ -> []
-
-// let rec intpProg3 (insElem: Instruction list) : float = 
-    // let rec stackLoop (stack: Stack) (insElem: Instruction List) : float =
-    //     match insElem with
-    //         | [] -> match stack with
-    //                 | S [] -> failwith "Stakken er tom, maayn!"
-    //                 | S (x::_) -> x
-    //         | ins::insList -> let myStack = intpInstr stack ins 
-    //                             stackLoop myStack insList
-    //     stackLoop (S[]) insElem
-
-         
-        
 // Take list of instructions, returns float
 let intpProg4 (insElem: Instruction list) : float = 
     let rec stackRec (stack: Stack) (prog: Instruction list) : float =  //<--recursively working our way through the stack and instruction list
@@ -134,12 +96,63 @@ let intpProg4 (insElem: Instruction list) : float =
     //instruction list as arguments. Finally: Call the stackRec with an empty stach S[] to execute the instructions and get to the top element of the stack
     
 
-//intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];;
+//intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; <-- This works!
 
-
-
-  
 // let trans = 0
+// STILL MISSING
+
 
 // 6.3 (HR 7.2)
-//type ComplexNumber
+
+// Allan's 1st attempt below ---------------------------------
+// Signature file
+//Constructed as per table 7.1 (Signature file with type augmentation) in the textbook
+
+module ComplexNumber
+type ComplexNumber
+    static member (.+) : ComplexNumber * ComplexNumber -> ComplexNumber
+    static member (.-) : ComplexNumber * ComplexNumber -> ComplexNumber
+    static member (.*) : ComplexNumber * ComplexNumber -> ComplexNumber
+    static member (./) : ComplexNumber * ComplexNumber -> ComplexNumber
+    val make : float * float -> ComplexNumber
+
+
+// Implementation file
+module ComplexNumber
+type ComplexNumber = { RealNo: float; ImaginaryNo: float } //<-- record of two fields, similar logic as in exercise 3.2, where we made Money records
+    static member (.+) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+        { RealNo = a.RealNo + b.RealNo; ImaginaryNo = a.ImaginaryNo + b.ImaginaryNo }
+
+    static member (.-) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+        { RealNo = a.RealNo - b.RealNo; ImaginaryNo = a.ImaginaryNo - b.ImaginaryNo }
+
+    static member (.*) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+        { RealNo = a.RealNo * b.RealNo - a.ImaginaryNo * b.ImaginaryNo; 
+            ImaginaryNo = a.RealNo * b.ImaginaryNo + a.ImaginaryNo * b.RealNo }
+
+    static member (./) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+        { RealNo = (a.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                      - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
+          ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                      - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
+//Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
+//we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
+
+
+
+
+
+
+//FROM 3.3 BELOW --------------------------------
+//      1. Declare infix for addition and multiplication
+
+//let ( .+) (a:float,b:float) (c:float,d:float) = (a + c, b + d) //calculate using the defintions in the assignment
+
+//let ( .*) (a:float,b:float) (c:float,d:float) = (a*c-b*d, b*c + a*d) //calculate using the defintions in the assignment
+
+//      2. Declare infix for subtraction and division
+// let ( .-) (a:float,b:float) (c:float,d:float) = (a - c, b - d) //calculate using the defintions in the assignment
+
+// let ( ./) (a,b) (c,d) =  ((a*(c/(c*c + d*d)) - (b*(-d/(c*c + d*d))), (b*(c/(c*c + d*d)))+(a*(-d/(c*c + d*d))))) //calculate using the defintions in the assignment
+
+//FROM 3.3 ABOVE-------------------------------------
