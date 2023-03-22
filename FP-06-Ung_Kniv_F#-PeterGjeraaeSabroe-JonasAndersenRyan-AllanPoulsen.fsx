@@ -114,6 +114,8 @@ intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];;
 
 // let trans = 0
 //Uses type declaration from Fexpr from 6.1/6.2 above
+//Based @ to append lists (cf. slides for  week3) + the structure from Fexpr above and the
+//structure of the assignment 5.4 and 5.5 from last week.
 let rec trans (fe: Fexpr * float) : Instruction List =
     match fe with
     | (Const c,_) -> [PUSH c] //<--lists and list appending as per slide 16/17 from week 3 (Records, tagged values and lists)    
