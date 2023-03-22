@@ -40,45 +40,45 @@ module test
     // list operations & cons operator x::xs
     // type be like: intpInstr: Stack -> Instruction -> Stack 
 
-// open type System.Math
-let intpInstr (S stack) (ins: Instruction) = 
-    match ins with
-    // stack -> x:s:xs  How we do it: The type of parameter "stack" is S (whis is list of float)
-    // then we do our operations and pipe it into S, be cause S takes a list of float
-    // and that's exactly what we feed it
-    | ADD -> 
-        match stack with
-        | x0::x1::xs -> (x0 + x1)::xs |> S
-        | _ -> stack |> S
-    | SUB -> 
-        match stack with
-        | x0::x1::xs -> (x0 - x1)::xs |> S
-        | _ -> stack |> S
-    | MULT -> 
-        match stack with
-        | x0::x1::xs -> (x0 * x1)::xs |> S
-        | _ -> stack |> S
-    | DIV -> 
-        match stack with
-        | x0::x1::xs -> (x0 / x1)::xs |> S
-        | _ -> stack |> S
-    | SIN -> 
-        match stack with
-        | x0::xs -> (System.Math.Sin(x0))::xs |> S
-        | _ -> stack |> S
-    | COS -> 
-        match stack with
-        | x0::xs -> (System.Math.Cos(x0))::xs |> S
-        | _ -> stack |> S
-    | LOG -> 
-        match stack with
-        | x0::xs -> (System.Math.Log(x0))::xs |> S
-        | _ -> stack |> S
-    | EXP -> 
-        match stack with
-        | x0::xs -> (System.Math.Exp(x0))::xs |> S
-        | _ -> stack |> S
-    | PUSH r -> r::stack |> S
+    // open type System.Math
+    let intpInstr (S stack) (ins: Instruction) = 
+        match ins with
+        // stack -> x:s:xs How we do it: The type of parameter "stack" is S (whis is list of float)
+        // then we do our operations and pipe it into S, be cause S takes a list of float
+        // and that's exactly what we feed it
+        | ADD -> 
+            match stack with
+            | x0::x1::xs -> (x0 + x1)::xs |> S
+            | _ -> stack |> S
+        | SUB -> 
+            match stack with
+            | x0::x1::xs -> (x0 - x1)::xs |> S
+            | _ -> stack |> S
+        | MULT -> 
+            match stack with
+            | x0::x1::xs -> (x0 * x1)::xs |> S
+            | _ -> stack |> S
+        | DIV -> 
+            match stack with
+            | x0::x1::xs -> (x0 / x1)::xs |> S
+            | _ -> stack |> S
+        | SIN -> 
+            match stack with
+            | x0::xs -> (System.Math.Sin(x0))::xs |> S
+            | _ -> stack |> S
+        | COS -> 
+            match stack with
+            | x0::xs -> (System.Math.Cos(x0))::xs |> S
+            | _ -> stack |> S
+        | LOG -> 
+            match stack with
+            | x0::xs -> (System.Math.Log(x0))::xs |> S
+            | _ -> stack |> S
+        | EXP -> 
+            match stack with
+            | x0::xs -> (System.Math.Exp(x0))::xs |> S
+            | _ -> stack |> S
+        | PUSH r -> r::stack |> S
 
     //intpInstr S[4.0; 4.5; 6.0] ADD;;  
 
@@ -98,27 +98,12 @@ let intpInstr (S stack) (ins: Instruction) =
 
     //intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; <-- This works!
 
-// let trans = 0
-//Uses type declaration from Fexpr from 6.1/6.2 above
-let rec trans (fe: Fexpr * float) : Instruction List =
-    match fe with
-    | (Const c,_) -> [PUSH c] //<--lists and list appending as per slide 16/17 from week 3 (Records, tagged values and lists)    
-    | (X, x) -> [PUSH x]
-    | Add(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [ADD] //<-- Concatenation as per slide 16/17 from week 3 (Records, tagged values and lists)    
-    | Sub(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [SUB] 
-    | Mul(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [MULT] 
-    | Div(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [DIV] 
-    | Sin a, x -> (trans (a, x)) @ [SIN] 
-    | Cos a, x -> (trans (a, x)) @ [COS] 
-    | Log a, x -> (trans (a, x)) @ [LOG] 
-    | Exp a, x -> (trans (a, x)) @ [SIN] 
-
-
-
-
+    // let trans = 0
+    // STILL MISSING
 
 
 // 6.3 (HR 7.2)
+
 // Allan's 1st attempt below ---------------------------------
 // Signature file
 //Constructed as per table 7.1 (Signature file with type augmentation) in the textbook
@@ -147,13 +132,18 @@ module ComplexNumber
             { RealNo = a.RealNo * b.RealNo - a.ImaginaryNo * b.ImaginaryNo; 
                 ImaginaryNo = a.RealNo * b.ImaginaryNo + a.ImaginaryNo * b.RealNo }
 
-    static member (./) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
-        { RealNo = (a.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
-                      - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
-          ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
-                      - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
-//Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
-//we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
+        static member (./) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+            { RealNo = (a.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                        - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
+            ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                        - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
+    //Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
+    //we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
+
+
+
+
+
 
 //FROM 3.3 BELOW --------------------------------
 //      1. Declare infix for addition and multiplication
