@@ -84,7 +84,7 @@ let intpInstr (S stack) (ins: Instruction) =
 
 // let intpProg  = 0
 // Take list of instructions, returns float
-let intpProg4 (insElem: Instruction list) : float = 
+let intpProg (insElem: Instruction list) : float = 
     let rec stackRec (stack: Stack) (prog: Instruction list) : float =  //<--recursively working our way through the stack and instruction list
         match prog with                                              //<--match on the instruction elements (ie. the isntruction list) one by one
         | [] -> match stack with                                        //<--if the instruction list is empty...
@@ -109,7 +109,7 @@ let intProg list  =
     execute (S []) list
 *)
 
-intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; 
+intpProg [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; 
 //<-- This works!
 
 // let trans = 0
