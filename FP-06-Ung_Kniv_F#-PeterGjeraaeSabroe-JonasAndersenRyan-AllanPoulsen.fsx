@@ -32,7 +32,7 @@ let rec fexprToString expr =
 // stack is a list of floats
 type Stack = S of float list
 
-let stackExmpl = S[4.5;3.5]
+// let stackExmpl = S[4.5;3.5]
 
 type Instruction = | ADD | SUB | MULT | DIV | SIN
                    | COS | LOG | EXP | PUSH of float
@@ -86,7 +86,7 @@ let intpInstr (S stack) (ins: Instruction) =
 // Take list of instructions, returns float
 let intpProg4 (insElem: Instruction list) : float = 
     let rec stackRec (stack: Stack) (prog: Instruction list) : float =  //<--recursively working our way through the stack and instruction list
-        match insElem with                                              //<--match on the instruction elements (ie. the isntruction list) one by one
+        match prog with                                              //<--match on the instruction elements (ie. the isntruction list) one by one
         | [] -> match stack with                                        //<--if the instruction list is empty...
                 | S [] -> failwith "Stakken er tom, maayn!"    //<--...then move on to the stack. if the stack is empty, the provide a message
                 | S (x::_) -> x                                         //<-- if the stack is not empty, then return the first element in the stack
@@ -94,9 +94,13 @@ let intpProg4 (insElem: Instruction list) : float =
                          stackRec myStack rest                              //intpInstr function declared above with the stack and instruction found as arguments
     stackRec (S []) insElem                                               // Then run the stackRec inner function (loop) with the remaining stack (myStack) and the rest of the 
     //instruction list as arguments. Finally: Call the stackRec with an empty stach S[] to execute the instructions and get to the top element of the stack
+
+// let intProg (list: Instruction list) : float =
     
 
-//intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; <-- This works!
+
+intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; 
+//<-- This works!
 
 // let trans = 0
 //Uses type declaration from Fexpr from 6.1/6.2 above
