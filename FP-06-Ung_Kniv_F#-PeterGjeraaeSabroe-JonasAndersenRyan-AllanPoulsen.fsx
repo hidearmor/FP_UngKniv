@@ -172,7 +172,7 @@ type ComplexNumber = { RealNo: float; ImaginaryNo: float } //<-- record of two f
                       - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
           ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
                       - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
-//Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
+//Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in above
 //we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
 
 //FROM 3.3 BELOW --------------------------------
