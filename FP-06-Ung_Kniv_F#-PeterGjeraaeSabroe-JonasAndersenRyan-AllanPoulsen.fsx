@@ -43,7 +43,7 @@ type Instruction = | ADD | SUB | MULT | DIV | SIN
 // open type System.Math
 let intpInstr (S stack) (ins: Instruction) = 
     match ins with
-    // stack -> x:s:xs How we do it: The type of parameter "stack" is S (whis is list of float)
+    // stack -> x:s:xs  How we do it: The type of parameter "stack" is S (whis is list of float)
     // then we do our operations and pipe it into S, be cause S takes a list of float
     // and that's exactly what we feed it
     | ADD -> 
@@ -99,11 +99,26 @@ let intpProg4 (insElem: Instruction list) : float =
 //intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; <-- This works!
 
 // let trans = 0
-// STILL MISSING
+//Uses type declaration from Fexpr from 6.1/6.2 above
+let rec trans (fe: Fexpr * float) : Instruction List =
+    match fe with
+    | (Const c,_) -> [PUSH c] //<--lists and list appending as per slide 16/17 from week 3 (Records, tagged values and lists)    
+    | (X, x) -> [PUSH x]
+    | Add(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [ADD] //<-- Concatenation as per slide 16/17 from week 3 (Records, tagged values and lists)    
+    | Sub(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [SUB] 
+    | Mul(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [MULT] 
+    | Div(a, b), x -> (trans (a, x)) @ (trans (b, x)) @ [DIV] 
+    | Sin a, x -> (trans (a, x)) @ [SIN] 
+    | Cos a, x -> (trans (a, x)) @ [COS] 
+    | Log a, x -> (trans (a, x)) @ [LOG] 
+    | Exp a, x -> (trans (a, x)) @ [SIN] 
+
+
+
+
 
 
 // 6.3 (HR 7.2)
-
 // Allan's 1st attempt below ---------------------------------
 // Signature file
 //Constructed as per table 7.1 (Signature file with type augmentation) in the textbook
@@ -137,11 +152,6 @@ type ComplexNumber = { RealNo: float; ImaginaryNo: float } //<-- record of two f
                       - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
 //Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
 //we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
-
-
-
-
-
 
 //FROM 3.3 BELOW --------------------------------
 //      1. Declare infix for addition and multiplication
