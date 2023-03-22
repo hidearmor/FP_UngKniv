@@ -3,7 +3,7 @@ module ComplexNumber
 type ComplexNumber = 
     { RN: float; IN: float } //<-- record of two fields, similar logic as in exercise 3.2, where we made Money records
     static member (.+) a b =
-        { RN = a.RN + b.RN; IN = a.IN + b.IN }
+        { RN = a.RN + b.RN; IN = a.IN + b.IN } // <-- this is a record that is returned
 
     static member (.-) a b =
         { RN = a.RN - b.RN; IN = a.IN - b.IN }
