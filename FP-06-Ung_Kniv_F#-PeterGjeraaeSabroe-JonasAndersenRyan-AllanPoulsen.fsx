@@ -127,10 +127,16 @@ let rec trans (fe: Fexpr * float) : Instruction List =
     | Log a, x -> (trans (a, x)) @ [LOG] 
     | Exp a, x -> (trans (a, x)) @ [SIN] 
 
+(* test cases
+let seq1 = trans ((Add(Const(2.5), Const(3.3))), 5.5)
+let res1 = intpProg4 seq1
 
+let seq2 = trans (Cos((Add(Const(2.5), Const(3.3)))), 2.1)
+let res2 = intpProg4 seq2
 
-
-
+let seq3 = trans (Add (Const 1.0, X), 5.0)
+let res3 = intpProg4 seq3
+*)
 
 // 6.3 (HR 7.2)
 // Allan's 1st attempt below ---------------------------------
