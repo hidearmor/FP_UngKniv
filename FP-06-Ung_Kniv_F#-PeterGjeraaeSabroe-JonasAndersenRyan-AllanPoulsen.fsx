@@ -95,9 +95,19 @@ let intpProg4 (insElem: Instruction list) : float =
     stackRec (S []) insElem                                               // Then run the stackRec inner function (loop) with the remaining stack (myStack) and the rest of the 
     //instruction list as arguments. Finally: Call the stackRec with an empty stach S[] to execute the instructions and get to the top element of the stack
 
-// let intProg (list: Instruction list) : float =
+(* SHORTER VERSION WITH DIFFERENT VARIABLE NAMES for pedagigical reasons
+let intProg list  =
+    let rec execute stack prog = 
+        match prog with
+        | [] -> match stack with 
+                | S [] -> failwith "no input given at all"
+                | S (x::_) -> x
+        | instr::xs ->
+            let newStack = intpInstr stack instr
+            execute newStack xs
     
-
+    execute (S []) list
+*)
 
 intpProg4 [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; 
 //<-- This works!
