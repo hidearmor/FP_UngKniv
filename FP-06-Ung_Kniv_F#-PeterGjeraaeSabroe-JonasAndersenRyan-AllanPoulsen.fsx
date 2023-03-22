@@ -110,36 +110,35 @@ module test
 
 // ComplexNumber.fsi
 module ComplexNumber
-[<SealedAttribute>]
-type ComplexNumber
-    static member (.+) : ComplexNumber * ComplexNumber -> ComplexNumber
-    static member (.-) : ComplexNumber * ComplexNumber -> ComplexNumber
-    static member (.*) : ComplexNumber * ComplexNumber -> ComplexNumber
-    static member (./) : ComplexNumber * ComplexNumber -> ComplexNumber
-val make : float * float -> ComplexNumber
-
-
+    [<SealedAttribute>]
+    type ComplexNumber
+        static member (.+) : ComplexNumber * ComplexNumber -> ComplexNumber
+        static member (.-) : ComplexNumber * ComplexNumber -> ComplexNumber
+        static member (.*) : ComplexNumber * ComplexNumber -> ComplexNumber
+        static member (./) : ComplexNumber * ComplexNumber -> ComplexNumber
+    val make : float * float -> ComplexNumber
+    
 // Implementation file
 
 module ComplexNumber
-type ComplexNumber = { RealNo: float; ImaginaryNo: float } //<-- record of two fields, similar logic as in exercise 3.2, where we made Money records
-    static member (.+) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
-        { RealNo = a.RealNo + b.RealNo; ImaginaryNo = a.ImaginaryNo + b.ImaginaryNo }
+    type ComplexNumber = { RealNo: float; ImaginaryNo: float } //<-- record of two fields, similar logic as in exercise 3.2, where we made Money records
+        static member (.+) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+            { RealNo = a.RealNo + b.RealNo; ImaginaryNo = a.ImaginaryNo + b.ImaginaryNo }
 
-    static member (.-) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
-        { RealNo = a.RealNo - b.RealNo; ImaginaryNo = a.ImaginaryNo - b.ImaginaryNo }
+        static member (.-) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+            { RealNo = a.RealNo - b.RealNo; ImaginaryNo = a.ImaginaryNo - b.ImaginaryNo }
 
-    static member (.*) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
-        { RealNo = a.RealNo * b.RealNo - a.ImaginaryNo * b.ImaginaryNo; 
-            ImaginaryNo = a.RealNo * b.ImaginaryNo + a.ImaginaryNo * b.RealNo }
+        static member (.*) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+            { RealNo = a.RealNo * b.RealNo - a.ImaginaryNo * b.ImaginaryNo; 
+                ImaginaryNo = a.RealNo * b.ImaginaryNo + a.ImaginaryNo * b.RealNo }
 
-    static member (./) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
-        { RealNo = (a.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
-                      - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
-          ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
-                      - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
-//Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
-//we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
+        static member (./) (a: ComplexNumber) (b: ComplexNumber) : ComplexNumber =
+            { RealNo = (a.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                        - (b.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo))));
+            ImaginaryNo = (b.RealNo *(a.ImaginaryNo/(a.ImaginaryNo * a.ImaginaryNo + b.ImaginaryNo*b.ImaginaryNo))
+                        - (a.RealNo *(-b.ImaginaryNo/(a.ImaginaryNo*a.ImaginaryNo + b.ImaginaryNo * b.ImaginaryNo)))) }
+    //Calculations are the exact same as in exercise 3.3, only with the note that in 3.3 we use a, b, c, d and in below
+    //we use a.RealNo, b.RealNo, a.ImaginarNo, b. ImaginaryNo instead. This is in order to use the record. Similar  to what we did in exercise 3.2
 
 
 
