@@ -15,7 +15,11 @@ g 2
 
 (* Assignment 7.2, HR 9.3 *)
 
-let rec sum(m,n) = failwith "Not implemented"
+let sum(m,n) =
+  let rec sum2 (m,n,x) = 
+    if n <> 0 then sum2(m, n-1, (m+(n+x)))
+    else x+m
+  sum2(m,n,0)
 
 (* Example *)
 sum(10,10)
