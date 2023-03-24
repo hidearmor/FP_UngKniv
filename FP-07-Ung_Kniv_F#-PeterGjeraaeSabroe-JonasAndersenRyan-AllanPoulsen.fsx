@@ -21,11 +21,26 @@ let sum(m,n) =
     else x+m
   sum2(m,n,0)
 
+  //Alternative version
+  // let sum(m,n) =
+  //   let rec tail n acc = 
+  //     match n with
+  //     | 0 -> acc + m
+  //     | n -> tail (n-1) (acc+m+n)
+  //   tail n 0
+
 (* Example *)
 sum(10,10)
 
 (* Assignment 7.3, HR 9.4 *)
-let length xs = failwith "Not implemented"
+// let length xs = failwith "Not implemented"
+let length xs = 
+  let rec tail xs acc = 
+    match xs with
+    | [] -> acc
+    | x::xs -> tail (xs) (acc+1)
+  tail xs 0
+
 (* Example *)
 length [1]
 
