@@ -33,17 +33,55 @@ let length xs =
     | [] -> acc
     | x::xs -> tail (xs) (acc+1)
   tail xs 0
-  
+
 (* Example *)
 length [1]
 
 (* Assignment 7.4, HR 9.6 *)
-let rec facC n c = failwith "Not implemented"
+// let rec facC n c = failwith "Not implemented"
+// Allan's attempt at 7.4/9.6 --------------------------------------
+// Factorial function from section 9.4 in the book:
+let rec factA = function
+  | (0, m) -> m
+  | (n, m) -> factA(n-1, n*m)
+
+// recursive from section 9.4 as a continuation-based:
+// A continuation based version will take a has an extra argument (the continuation function, "c", which we want to "feed" the results 
+// from the recursive call) (cf. textbook section 9.6 + slides W07 "Imperative features and efficiency")
+let rec facC n c =
+  if n = 1 then c 1                              //<-- If n=1 then c is called with value = 1 (since 1! = 1)
+  else facC (n-1) (fun res -> c(n * res))  //<-- Else recursively call facC with n-1 and the continuation function "fun res -> c(n * res)"
+                                                //      the calls of c are then tail calls 
+// Running factA(5000000,1);; gives the results
+// Real: 00:00:00.005, CPU: 00:00:00.000
+// Running facC 5000000 id;; gives the result
+// Real: 00:00:00.428, CPU: 00:00:00.406
+                                        
 (* Example *)
 facC 5 id
   
 (* Assignment 7.5, HR 8.6 *)
-let rec fib n = failwith "Not implemented"
+//let rec fib n = failwith "Not implemented"
+//Allan's attempt -------------------------------------
+//The Fibonacci numbers from 1.6
+let rec fib16 = function
+    | 0 -> 0
+    | 1 -> 1
+    | n -> fib16(n-1) + fib16(n-2)
+
+//Solution to assignment 7.5 (not sure if this is what is asked for, but it's a Wdile-loop that does the job :-)):
+let fib n = 
+    let mutable a = 0 //First no in Fibunacci sequence
+    let mutable b = 1 //Second no in Fibonacci sequence
+    let mutable x = 0 //Counter
+    while x < n do
+      let c = a+b     //"Helper variable" calculates the fibunacci
+      a <- b                //value of b is parsed into a (ie. moving a step forward in the fib seq)
+      b <- c                //value of c is parsed into b (ie. moving a step forward in the fib seq)
+      x <- x+1              
+    a                       //return a as the value of the fib seq.
+//-----------------------------------------------------
+
 (* Example *)
 fib 4
 
