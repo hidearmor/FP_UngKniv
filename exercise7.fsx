@@ -86,10 +86,47 @@ let fib n =
 fib 4
 
 (* Assignment 7.6, HR 9.7 *)
-let rec fibA n n1 n2 = failwith "Not implemented"
+//let rec fibA n n1 n2 = failwith "Not implemented"
+// Allan's version-----------------------------------
+let rec fibA n n1 n2  = 
+  match n with
+  | 2 -> n1 + n2                  //<-- Stop at 2, cf below
+  | _ -> fibA (n-1) n2 (n1+n2)    //<-- Recursively counts down n and sets n1 to  previous in row (ie. n2) and n2 to n1 + n2.
+
+// Why stop at 2?
+// It corresponds to n2 (n2 = F(n-2)) being 1 as per:
+// Starting value n2 = 1 -> F(n-2) = F(8) = 1 counting down:
+// F(8) = 1 (n1 + n2)
+// F(7) = 1
+// F(6) = 3
+// F(5) = 5
+// F(4) = 8
+// F(3) = 13
+// F(2) = 21
+// F(1) = 34
+// ---> n1 = F(2) = 21 + n2 = F1(1) = 34 -> n1 + n2 = 55
+//-------------------------------------
+
 (* Example *)
 fibA 10 0 1
 
-let rec fibC n c = failwith "Not implemented"
+// let rec fibC n c = failwith "Not implemented"
+// Allan's version 1 --------------------------------
+// cf. textbook example section 9.6 on BigList.
+let rec fibC n c = 
+  if n <= 2 then c 1
+  else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
+
+// version 2
+let rec fibC2 n c =
+  match n with
+  | 2 -> c 1
+  | _ -> fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
+// Explanation to the last line:
+// the element "...(fun n2 -> c (n1 + n2))" basically just uses the continuation function c to make n2 = n1 + n2 (same as assignment 9.7 above)
+// the element "...(fun n1 -> fibC (n-2)..." sets n1 to be equal to whatever comes out of the function "(fun n2...)" (same as assignment 9.7 above)
+// the element "fibC (n-1)..." is the counter 
+//---------------------------------------------------------
+
 (* Example *)
 fibC 10 id
