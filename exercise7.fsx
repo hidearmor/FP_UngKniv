@@ -115,7 +115,7 @@ fibA 10 0 1
 // cf. textbook example section 9.6 on BigList.
 let rec fibC n c = 
   if n <= 2 then c 1
-  else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
+  else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2))) //<-- Cf. Patrick's lecture (FP 23 6.1) for ref as well
 
 // version 2
 let rec fibC2 n c =
