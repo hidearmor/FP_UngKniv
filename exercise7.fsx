@@ -52,6 +52,19 @@ let rec facC n c =
   if n = 1 then c 1                              //<-- If n=1 then c is called with value = 1 (since 1! = 1)
   else facC (n-1) (fun res -> c(n * res))  //<-- Else recursively call facC with n-1 and the continuation function "fun res -> c(n * res)"
                                                 //      the calls of c are then tail calls 
+
+// Jonas' addition
+// version with the identity function "hidden" so the interface is simpler
+// because it feel redundant to me to have know, that adding an 
+// identity function is nessecary to use the funtion
+let factHiddenC n =
+  let c = id
+  let rec f n' g =
+    if n' = 1 then g 1
+    else f (n'-1) (fun x -> g(n' * x))
+  f n c
+
+
 // Running factA(5000000,1);; gives the results
 // Real: 00:00:00.005, CPU: 00:00:00.000
 // Running facC 5000000 id;; gives the result
@@ -88,10 +101,12 @@ fib 4
 (* Assignment 7.6, HR 9.7 *)
 //let rec fibA n n1 n2 = failwith "Not implemented"
 // Allan's version-----------------------------------
+// Jonas added behaviour for 1 since it is a fibbonacci number but did not compute properly
 let rec fibA n n1 n2  = 
   match n with
-  | 2 -> n1 + n2                  //<-- Stop at 2, cf below
-  | _ -> fibA (n-1) n2 (n1+n2)    //<-- Recursively counts down n and sets n1 to  previous in row (ie. n2) and n2 to n1 + n2.
+  | 1 | 2 -> n1 + n2                  //<-- Stop at 2, cf below
+  | _     -> fibA (n-1) n2 (n1+n2)    
+  //^^^ Recursively counts down n and sets n1 to  previous in row (ie. n2) and n2 to n1 + n2.
 
 // Why stop at 2?
 // It corresponds to n2 (n2 = F(n-2)) being 1 as per:
@@ -117,11 +132,11 @@ let rec fibC n c =
   if n <= 2 then c 1
   else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2))) //<-- Cf. Patrick's lecture (FP 23 6.1) for ref as well
 
-// version 2
+// version 2 (Jonas added 1 again)
 let rec fibC2 n c =
   match n with
-  | 2 -> c 1
-  | _ -> fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
+  | 2 | 1 -> c 1
+  | _ -> fibC2 (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
 // Explanation to the last line:
 // the element "...(fun n2 -> c (n1 + n2))" basically just uses the continuation function c to make n2 = n1 + n2 (same as assignment 9.7 above)
 // the element "...(fun n1 -> fibC (n-2)..." sets n1 to be equal to whatever comes out of the function "(fun n2...)" (same as assignment 9.7 above)
