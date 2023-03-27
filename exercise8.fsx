@@ -36,13 +36,10 @@ let rec countA2 (accN: int) (t: BinTree<'a>) : int =
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
 countA2 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
 // Version 2 END
-// Allan's attempt at 8.1/9.8 END -------------------------------------------------------
 
 (* Assignment 8.2, HR 9.9 *)
 // let rec countAC t n c = failwith "Not implemented"
-
-// Allan's attempt at 8.2 / 9.9 BEGIN ----------------------------------------------
-let rec countAC (t: BinTree<'a>) n c = 
+// Allan's attempt at 8.1/9.8 END -------------------------------------------------------
 
 
 
