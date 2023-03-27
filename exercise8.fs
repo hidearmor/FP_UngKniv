@@ -2,8 +2,7 @@
 type BinTree<'a> = (* Page 133 *)
     Leaf
   | Node of BinTree<'a> * 'a * BinTree<'a>
-
-let rec countA t n = failwith "Not implemented"
+// let rec countA t n = failwith "Not implemented"
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
