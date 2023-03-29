@@ -38,14 +38,19 @@ countA2 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
 // Version 2 END
 // Allan's attempt at 8.1/9.8 END -------------------------------------------------------
 
-
+// Allan's attempt at 8.2/9.9 BEGIN -----------------------------------------------------
 (* Assignment 8.2, HR 9.9 *)
 // let rec countAC t n c = failwith "Not implemented"
-
-
+let rec countAC t a c =
+  match t with
+  | Leaf -> c 0
+  | Node (l, n, r) -> countAC l n (fun vl -> countAC r n (fun vr -> c (vl + vr  + n - 1)))
+// Structure inspired by Patrick's video for FP 23 6.1. Traverse left, then traverse right, then sum and move through the nodes!
 
 (* Example *)
 countAC t 0 id
+// Allan's attempt at 8.2/9.9 END -------------------------------------------------------
+
 
 (* Assignment 8.3, HR 9.10 *)
 let rec bigListK n k =
