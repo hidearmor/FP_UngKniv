@@ -112,7 +112,7 @@ let rec fibA n n1 n2  =
 
 
 let fibC n =
-  let f = (fun b _ -> b) // hide away the continuation function
+  let f = (fun a _ -> a) // hide away the continuation function
   let rec inner m (c : int -> int -> int) =  // make the continuation funtion take TWO arguments
     match m with
     | m when m < 0 -> failwith "nope"
@@ -120,6 +120,11 @@ let fibC n =
     | 1 -> c 1 1
     | _ -> inner (m-1) (fun a b -> c b (a + b)) // accumulate in param b and set param a to be previous b
   inner n f //start the recursion
+
+  // note: the accumulation happens on function-level
+  // when we get down to 1 and get some actual integers, that chain of functions/operations
+  // calculates the final number.
+
 
 (*
   Old Version
