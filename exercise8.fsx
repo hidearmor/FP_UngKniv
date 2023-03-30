@@ -55,14 +55,26 @@ let rec countAC t a c =
   | Node (l, n, r) -> countAC l a (fun vl -> countAC r a (fun vr -> c (vl + vr  + a + 1)))
 // Structure inspired by Patrick's video for FP 23 6.1. Traverse left, then traverse right, then sum and move through the nodes!
 
+// Allan's attempt at 8.2/9.9 END -------------------------------------------------------
+
+// ----- JONAS' VERSIONS 8.2/9.9 --- START ------------------------------------
+
 // WORKS THE SAME COMPLETELY WITHOUT a ??
 let rec countAC2 t c =
   match t with
   | Leaf -> c 0
   | Node (l, n, r) -> countAC2 l (fun vl -> countAC2 r (fun vr -> c (vl + vr + 1)))
+
+
+// Version 
+let rec f t a c = 
+  match t with
+  | Leaf -> c 0
+  | Node (l, n, r) -> f l (a+1) (fun x -> f r (a+1) (fun y -> c (x + y + a)))
 (* Example *)
 countAC t 0 id
-// Allan's attempt at 8.2/9.9 END -------------------------------------------------------
+
+// ----- JONAS' VERSIONS 8.2/9.9 --- END ------------------------------------
 
 
 (* Assignment 8.3, HR 9.10 *)
