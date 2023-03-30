@@ -38,6 +38,14 @@ countA2 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
 // Version 2 END
 // Allan's attempt at 8.1/9.8 END -------------------------------------------------------
 
+// another version
+// we accumulate in a different way and WITHOUT tail recursion here.
+// but we accumulate on the stack, not in the accumulator parameter
+let rec countANoTail (accN: int) (t: BinTree<'a>) : int = 
+  match t with
+  | Leaf -> accN
+  | Node (l, n, r) -> 1 + ((countANoTail accN l) + (countANoTail accN r))
+
 // Allan's attempt at 8.2/9.9 BEGIN -----------------------------------------------------
 (* Assignment 8.2, HR 9.9 *)
 // let rec countAC t n c = failwith "Not implemented"
