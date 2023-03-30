@@ -74,6 +74,13 @@ let rec countAC3 t a c =
   | Node (l, n, r) -> countAC3 l (a+1) (fun x -> countAC3 r (a+1) (fun y -> c (x + y + a)))
 // val countAC3: t: BinTree<'a> -> a: int -> c: (int -> 'b) -> 'b
 
+  // some stuff for testing monday
+let t2 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Leaf))
+let t3 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Node(Node(Leaf,7,Leaf), 5, Leaf)))
+countAC2 t3 id
+countAC3 t3 0 id
+
+
 (* Example *)
 countAC t 0 id
 
