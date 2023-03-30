@@ -48,13 +48,18 @@ let rec countANoTail (accN: int) (t: BinTree<'a>) : int =
 
 // Allan's attempt at 8.2/9.9 BEGIN -----------------------------------------------------
 (* Assignment 8.2, HR 9.9 *)
-// let rec countAC t n c = failwith "Not implemented"
+// Jonas corrected the last line to have the counter a instead of the node value n
 let rec countAC t a c =
   match t with
   | Leaf -> c 0
   | Node (l, n, r) -> countAC l a (fun vl -> countAC r a (fun vr -> c (vl + vr  + a + 1)))
 // Structure inspired by Patrick's video for FP 23 6.1. Traverse left, then traverse right, then sum and move through the nodes!
 
+// WORKS THE SAME COMPLETELY WITHOUT a ??
+let rec countAC2 t c =
+  match t with
+  | Leaf -> c 0
+  | Node (l, n, r) -> countAC2 l (fun vl -> countAC2 r (fun vr -> c (vl + vr + 1)))
 (* Example *)
 countAC t 0 id
 // Allan's attempt at 8.2/9.9 END -------------------------------------------------------
