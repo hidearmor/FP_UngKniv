@@ -66,11 +66,14 @@ let rec countAC2 t c =
   | Node (l, n, r) -> countAC2 l (fun vl -> countAC2 r (fun vr -> c (vl + vr + 1)))
 
 
-// Version 
-let rec f t a c = 
+// Version that actually utilizes the accumulating parameter
+// altough I think the above one is smarter
+let rec countAC3 t a c = 
   match t with
   | Leaf -> c 0
-  | Node (l, n, r) -> f l (a+1) (fun x -> f r (a+1) (fun y -> c (x + y + a)))
+  | Node (l, n, r) -> countAC3 l (a+1) (fun x -> countAC3 r (a+1) (fun y -> c (x + y + a)))
+// val countAC3: t: BinTree<'a> -> a: int -> c: (int -> 'b) -> 'b
+
 (* Example *)
 countAC t 0 id
 
