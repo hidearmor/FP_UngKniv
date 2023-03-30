@@ -52,7 +52,7 @@ let rec countANoTail (accN: int) (t: BinTree<'a>) : int =
 let rec countAC t a c =
   match t with
   | Leaf -> c 0
-  | Node (l, n, r) -> countAC l n (fun vl -> countAC r n (fun vr -> c (vl + vr  + n - 1)))
+  | Node (l, n, r) -> countAC l a (fun vl -> countAC r a (fun vr -> c (vl + vr  + a + 1)))
 // Structure inspired by Patrick's video for FP 23 6.1. Traverse left, then traverse right, then sum and move through the nodes!
 
 (* Example *)
