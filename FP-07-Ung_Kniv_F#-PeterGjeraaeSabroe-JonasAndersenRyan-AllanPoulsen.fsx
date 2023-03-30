@@ -47,10 +47,11 @@ length [1]
 (* Assignment 7.4, HR 9.6 *)
 // let rec facC n c = failwith "Not implemented"
 // Allan's attempt at 7.4/9.6 --------------------------------------
+
 // Factorial function from section 9.4 in the book:
-let rec factA = function
+(* let rec factA = function
   | (0, m) -> m
-  | (n, m) -> factA(n-1, n*m)
+  | (n, m) -> factA(n-1, n*m) *)
 
 // recursive from section 9.4 as a continuation-based:
 // A continuation based version will take a has an extra argument (the continuation function, "c", which we want to "feed" the results 
@@ -71,10 +72,10 @@ facC 5 id
 // let rec fib n = failwith "Not implemented"
 //Allan's attempt -------------------------------------
 //The Fibonacci numbers from 1.6
-let rec fib16 = function
+(* let rec fib16 = function
     | 0 -> 0
     | 1 -> 1
-    | n -> fib16(n-1) + fib16(n-2)
+    | n -> fib16(n-1) + fib16(n-2) *)
 
 //Solution to assignment 7.5 (not sure if this is what is asked for, but it's a Wdile-loop that does the job :-)):
 let fib n = 
@@ -93,10 +94,18 @@ let fib n =
 fib 4
 
 (* Assignment 7.6, HR 9.7 *)
-let rec fibA n n1 n2 = failwith "Not implemented"
+let rec fibA n n1 n2  = 
+  match n with
+  | 1 | 2 -> n1 + n2                  
+  | _     -> fibA (n-1) n2 (n1+n2)
 (* Example *)
 fibA 10 0 1
 
-let rec fibC n c = failwith "Not implemented"
+
+
+let rec fibC n c =
+  match n with
+  | 2 | 1 -> c 1
+  | _ -> fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c (n1 + n2)))
 (* Example *)
 fibC 10 id
