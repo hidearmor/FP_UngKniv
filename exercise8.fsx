@@ -117,11 +117,23 @@ let rec countC t c = (* from page HR 215 *)
     Leaf -> c 0
   | Node(tl,n,tr) -> countC tl (fun vl -> countC tr (fun vr -> c(vl+vr+1)))
 
+
 (* Assignment 8.5, HR 11.1 *)
-let oddNumbers = failwith "Not implemented"
+//Peters version
+//Rather simple sequence build using Seq.initInfinite and the function for odd numbers (fun i - 2*i+1)
+let oddNumbers = Seq.initInfinite (fun i -> 2*i+1)
+
 
 (* Assignment 8.6, HR 11.2 *)
-let fac = failwith "Not implemented"
+//Peters version
+//Again quite simple - måske lidt for blåøjet. Jeg bruger en enkelt (ikke særlig smart - burde laves som continuation) fact
+//funktion som en hjælper funktion til at genere sequences af alle factorials. 
+let rec fact = function  
+  |0 -> 1;
+  |n -> n * fact(n-1)
+
+
+let fac = Seq.initInfinite (fun i -> fact i)
 (*Examples *)
 Seq.take 0 fac
 Seq.take 1 fac
