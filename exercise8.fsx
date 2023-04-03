@@ -66,19 +66,12 @@ let rec countAC2 t c =
   | Node (l, n, r) -> countAC2 l (fun vl -> countAC2 r (fun vr -> c (vl + vr + 1)))
 
 
-// Version that actually utilizes the accumulating parameter
-// altough I think the above one is smarter
-let rec countAC3 t a c = 
-  match t with
-  | Leaf -> c 0
-  | Node (l, n, r) -> countAC3 l (a+1) (fun x -> countAC3 r (a+1) (fun y -> c (x + y + a)))
-// val countAC3: t: BinTree<'a> -> a: int -> c: (int -> 'b) -> 'b
-
-  // some stuff for testing monday
+// some stuff for testing monday
+(*
 let t2 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Leaf))
 let t3 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Node(Node(Leaf,7,Leaf), 5, Leaf)))
 countAC2 t3 id
-countAC3 t3 0 id
+*)
 
 
 (* Example *)
@@ -128,12 +121,19 @@ let oddNumbers = Seq.initInfinite (fun i -> 2*i+1)
 //Peters version
 //Again quite simple - måske lidt for blåøjet. Jeg bruger en enkelt (ikke særlig smart - burde laves som continuation) fact
 //funktion som en hjælper funktion til at genere sequences af alle factorials. 
-let rec fact = function  
-  |0 -> 1;
-  |n -> n * fact(n-1)
+let rec factA = function
+  | (0, m) -> m
+  | (n, m) -> factA(n-1, n*m)
+
+(*
+// Does NOT work with this fact function
+let rec facC n c =
+  if n = 1 then c 1
+  else facC (n-1) (fun res -> c(n * res))
+*)
 
 
-let fac = Seq.initInfinite (fun i -> fact i)
+let fac = Seq.initInfinite (fun i -> factA (i, 1))
 (*Examples *)
 Seq.take 0 fac
 Seq.take 1 fac
