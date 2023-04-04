@@ -31,6 +31,7 @@ let rec countA2 (accN: int) (t: BinTree<'a>) : int =
   | Node (l , n, r) -> countA2 (countA2 (accN + 1) l) r
 // Should basically do the same as version 1 - only in int -> BinTree<'a> -> int
 // I basically just played around with the version 1 components to make it fit with int -> BinTree<'a> -> int
+// -----------PETER COMMENT: I think we should go with this solution. -------------
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
@@ -38,6 +39,7 @@ countA2 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
 // Version 2 END
 // Allan's attempt at 8.1/9.8 END -------------------------------------------------------
 
+// -------PETER COMMENT: This section we can skip, since the above IS NOT tail recursive---------------
 // another version
 // we accumulate in a different way and WITHOUT tail recursion here.
 // but we accumulate on the stack, not in the accumulator parameter
@@ -46,8 +48,11 @@ let rec countANoTail (accN: int) (t: BinTree<'a>) : int =
   | Leaf -> accN
   | Node (l, n, r) -> 1 + ((countANoTail accN l) + (countANoTail accN r))
 
-// Allan's attempt at 8.2/9.9 BEGIN -----------------------------------------------------
+
+
+
 (* Assignment 8.2, HR 9.9 *)
+// Allan's attempt at 8.2/9.9 BEGIN -----------------------------------------------------
 // Jonas corrected the last line to have the counter a instead of the node value n
 let rec countAC t a c =
   match t with
@@ -73,14 +78,24 @@ let t3 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Node(Nod
 countAC2 t3 id
 *)
 
+// ---------- PETERS COMMENT:-----------
+// Godt arbjede drenge! Jonas har en pointe i at akkumulatoren i CountAC ingen funktion har. 
+// Fjerner vi den (som i CountAC2) får vi en funktion identisk med CountC i bogen side 214-215
+// Opgaven går altså ud på at omskrive CountC (CountAC2), så man erstatter en continuation med en akkumulator. 
+// Hvordan vi løser det, ved jeg ikke endnnu :) 
+
 
 (* Example *)
 countAC t 0 id
 
 // ----- JONAS' VERSIONS 8.2/9.9 --- END ------------------------------------
 
-// ------ ALLAN's VERSION 8.3/9.10 BEGIN -------------
+
+
+
+
 (* Assignment 8.3, HR 9.10 *)
+// ------ ALLAN's VERSION 8.3/9.10 BEGIN -------------
 let rec bigListK n k =
   if n=0 then k []
   else bigListK (n-1) (fun res -> 1::k(res))
@@ -96,8 +111,21 @@ let bigListK2 n =
   foo [] n
 
 // I sort of feel like above bigListK2 should work as tail recursive, but cannot find my way through why it does not??
+// ------- PETERS EXTENSION BEGIN --------------
+
+//The bigListK2 could also look like this, which would make it tail recursive (... and identical to bigListC from p. 213)
+
+let rec bigListK3 n k = 
+  if n = 0 then k []
+  else bigListK3 (n-1) (fun res -> k(1::res))
+
+// ------- PETERS EXTENSION END --------
 
 // ------ ALLAN's VERSION 8.3/9.10 END -------------
+
+
+
+
 
 (* Assignment 8.4, HR 9.11 *)
 let rec leftTreeC n c = failwith "Not implemented"
@@ -125,10 +153,17 @@ let rec countC t c = (* from page HR 215 *)
   | Node(tl,n,tr) -> countC tl (fun vl -> countC tr (fun vr -> c(vl+vr+1)))
 
 
+
+
+
 (* Assignment 8.5, HR 11.1 *)
 //Peters version
 //Rather simple sequence build using Seq.initInfinite and the function for odd numbers (fun i - 2*i+1)
 let oddNumbers = Seq.initInfinite (fun i -> 2*i+1)
+
+
+
+
 
 
 (* Assignment 8.6, HR 11.2 *)
@@ -145,7 +180,6 @@ let rec facC n c =
   if n = 1 then c 1
   else facC (n-1) (fun res -> c(n * res))
 *)
-
 
 let fac = Seq.initInfinite (fun i -> factA (i, 1))
 (*Examples *)
