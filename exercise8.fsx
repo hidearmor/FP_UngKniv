@@ -86,11 +86,25 @@ countAC t 0 id
 
 // ----- JONAS' VERSIONS 8.2/9.9 --- END ------------------------------------
 
-
+// ------ ALLAN's VERSION 8.3/9.10 BEGIN -------------
 (* Assignment 8.3, HR 9.10 *)
 let rec bigListK n k =
   if n=0 then k []
   else bigListK (n-1) (fun res -> 1::k(res))
+
+// This does not work because it is not tail recursive and therefore uses a lot of memory.
+// It could look something like this instead:
+
+let bigListK2 n =
+  let rec foo acc n =
+    match n with
+    | 0 -> acc
+    | _ -> foo (1::acc) (n-1)
+  foo [] n
+
+// I sort of feel like above bigListK2 should work as tail recursive, but cannot find my way through why it does not??
+
+// ------ ALLAN's VERSION 8.3/9.10 END -------------
 
 (* Assignment 8.4, HR 9.11 *)
 let rec leftTreeC n c = failwith "Not implemented"
