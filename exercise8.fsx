@@ -91,6 +91,22 @@ countAC t 0 id
 // ----- JONAS' VERSIONS 8.2/9.9 --- END ------------------------------------
 
 
+//------------------------- PETERS VERSION 8.2/9.9 ---- BEGIN  ----------------
+// This count function takes a tree, an accumulator and a continuation function as parameter
+// When t is matched on a Node, it calls itself on the left sub-tree and add 1 to the accumulator
+// When t is matched on a Leaf, the value of the accumulator is carried on into the continuation function, 
+//from where the traversal continues
+ 
+let rec countAC3 t acc cont =
+    match t with
+    | Leaf -> cont acc
+    | Node (left, _, right) -> countAC left (acc+1) (fun leftCount -> countAC right leftCount cont)
+
+
+(* Example *)
+countAC3 t 0 id
+
+//-------------------- PETERS VERSION 8.2/9.9----- END--------------------
 
 
 

@@ -6,13 +6,18 @@ type BinTree<'a> = (* Page 133 *)
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
+let t2 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Leaf))
+let t3 = Node(Node(Leaf,3,Node(Leaf,3,Node(Leaf,4,Leaf))),1,Node(Leaf,4,Node(Node(Leaf,7,Leaf), 5, Leaf)))
 countA t 0
 
 (* Assignment 8.2, HR 9.9 *)
-let rec countAC t n c = failwith "Not implemented"
+let rec countAC t acc cont =
+    match t with
+    | Leaf -> cont acc
+    | Node (left, _, right) -> countAC left (acc+1) (fun leftCount -> countAC right leftCount cont)
 
 (* Example *)
-countAC t 0 id
+countAC t3 0 id
 
 (* Assignment 8.3, HR 9.10 *)
 let rec bigListK n k =
