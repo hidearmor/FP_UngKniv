@@ -11,33 +11,36 @@ type BinTree<'a> = (* Page 133 *)
 // whereas the assignment asks for a function of format "int -> BinTree<'a> -> int".
 // I have made two versions, cf. below
 
-//version 1 BEGIN
-let rec countA  (t: BinTree<'a>) (accN: int): int = 
-  match t with
-  | Leaf -> accN  //<-- Accumulate until  Leaf
-  | Node (l , n, r) -> countA r (countA l (1 + accN)) 
-// Above is more or less taken from Patrick's "sumA" example in video for lecture FP 23 6.1, with the 
-// main difference that we count the leaves (1+accN) and nut sum them as in the video
-// This works well with the example below 
-(* Example *)
-let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
-countA t 0 //<-- The original example call
-// Version 1 END
+// ----------- PETERS COMMENT: Jeg har byttet rundt på version 1 og 2, så version 1 nu matcher den type opgaven efterspørger.
 
-// Version 2 BEGIN
-let rec countA2 (accN: int) (t: BinTree<'a>) : int = 
+// Version 1 BEGIN
+let rec countA (accN: int) (t: BinTree<'a>) : int = 
   match t with
   | Leaf -> accN
-  | Node (l , n, r) -> countA2 (countA2 (accN + 1) l) r
+  | Node (l , n, r) -> countA (countA (accN + 1) l) r
 // Should basically do the same as version 1 - only in int -> BinTree<'a> -> int
 // I basically just played around with the version 1 components to make it fit with int -> BinTree<'a> -> int
 // -----------PETER COMMENT: I think we should go with this solution. -------------
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
-countA2 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
+countA 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
+// Version 1 END
+
+//version 2 BEGIN
+let rec countA2  (t: BinTree<'a>) (accN: int): int = 
+  match t with
+  | Leaf -> accN  //<-- Accumulate until  Leaf
+  | Node (l , n, r) -> countA2 r (countA2 l (1 + accN)) 
+// Above is more or less taken from Patrick's "sumA" example in video for lecture FP 23 6.1, with the 
+// main difference that we count the leaves (1+accN) and nut sum them as in the video
+// This works well with the example below 
+(* Example *)
+let t1 = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
+countA2 t 0 //<-- The original example call
 // Version 2 END
 // Allan's attempt at 8.1/9.8 END -------------------------------------------------------
+
 
 // -------PETER COMMENT: This section we can skip, since the above IS NOT tail recursive---------------
 // another version
@@ -47,6 +50,9 @@ let rec countANoTail (accN: int) (t: BinTree<'a>) : int =
   match t with
   | Leaf -> accN
   | Node (l, n, r) -> 1 + ((countANoTail accN l) + (countANoTail accN r))
+
+
+
 
 
 
@@ -100,13 +106,15 @@ countAC t 0 id
 let rec countAC3 t acc cont =
     match t with
     | Leaf -> cont acc
-    | Node (left, _, right) -> countAC left (acc+1) (fun leftCount -> countAC right leftCount cont)
+    | Node (left, _, right) -> countAC3 left (acc+1) (fun leftCount -> countAC3 right leftCount cont)
 
 
 (* Example *)
 countAC3 t 0 id
 
 //-------------------- PETERS VERSION 8.2/9.9----- END--------------------
+
+
 
 
 
@@ -143,30 +151,85 @@ let rec bigListK3 n k =
 
 
 
+
+
 (* Assignment 8.4, HR 9.11 *)
-let rec leftTreeC n c = failwith "Not implemented"
-let leftTree n = failwith "leftTreeC ..."
-(* Examples *)
+//First we define the tail-recursive function leftTreeC using continuation
+let rec leftTreeC n c = 
+    match n with
+    | n when n<0 ->  c Leaf
+    | n -> leftTreeC (n-1) (fun vl -> c(Node(vl, n, Leaf)))
+
+//Then we wrap this iterative function into the function leftTree, having id as the continuation function.
+let leftTree n = leftTreeC n id 
+(* Examples 
 leftTree 0
 leftTree 1
-leftTree 360000
+leftTree 2
+leftTree 3600000 *)
 
-let rec rightTreeC n c = failwith "Not implemented"
-let rightTree n = failwith "rightTreeC ..."
-(* Examples *)
+//Same as above but for rightTreeC
+let rec rightTreeC n c = 
+    match n with
+    | n when n<0 ->  c Leaf
+    | n -> rightTreeC (n-1) (fun vr -> c(Node(Leaf, n, vr)))
+
+//Same as above but for rightTree
+let rightTree n = rightTreeC n id
+(* Examples 
 rightTree 0
 rightTree 1
 rightTree 2
-rightTree 360000
+rightTree 360000 *)
 
+
+//-----8.4.1----
+//First we test the generic count function as described below
 let rec count = function (* from page HR 214 *)
     Leaf -> 0
   | Node(tl,n,tr) -> count tl + count tr + 1
 
+//Testing the count function on functions leftTree and rightTree
+count (leftTree 260000) //Peters mac can handle this 
+count (leftTree 270000) //This causes Stack overflow
+count (rightTree 260000) //Peters mac can handle this
+count (rightTree 270000) //This causes Stack overflow
+
+//Then we test the tail-recursive function CountA, that uses accumulation.
+countA 0 (leftTree 300000) //Mystisk! Peters mac kunne ikke køre denne function med leftTree.
+countA 0 (rightTree 100000000) // Men havde ingen problem med at køre denne absurde function på righttree - omend det tog lidt tid at udregne...
+
+
+//-----8.4.2----
+//Now we test the computation time of the count functions using continuation.
+//First we test the function countC from the book - this function has two continuation steps. (see function below)
 let rec countC t c = (* from page HR 215 *)
   match t with
     Leaf -> c 0
   | Node(tl,n,tr) -> countC tl (fun vl -> countC tr (fun vr -> c(vl+vr+1)))
+
+// results
+countC (leftTree 5000000) id // Realtime: 5 sec
+countC (rightTree 5000000) id // Realtime: 6 sec
+countC (leftTree 10000000) id // Realtime: 6 sec
+countC (rightTree 10000000) id // Realtime: 9 sec
+countC (leftTree 20000000) id // Realtime: 16 sec
+countC (rightTree 20000000) id // Realtime: 18 sec
+countC (leftTree 40000000) id // Realtime: 21 sec
+countC (rightTree 40000000) id // Realtime: 21 sec
+
+// Then we do the same tests, but now for the count function countAC we defined above, that uses both accumulation and continuation.
+// We observe that this function is slightly faster than countC.
+countAC3 (leftTree 5000000) 0 id // Realtime: 2,3 sec
+countAC3 (rightTree 5000000) 0 id // Realtime: 1,2 sec
+countAC3 (leftTree 10000000) 0 id // Realtime: 3,6 sec
+countAC3 (rightTree 10000000) 0 id // Realtime: 2,9 sec
+countAC3 (leftTree 20000000) 0 id // Realtime: 7 sec
+countAC3 (rightTree 20000000) 0 id // Realtime: 6 sec
+countAC3 (leftTree 40000000) 0 id // Realtime: 17,6 sec
+countAC3 (rightTree 40000000) 0 id // Realtime: 14,6 sec
+
+
 
 
 
