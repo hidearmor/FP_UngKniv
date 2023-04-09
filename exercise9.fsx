@@ -35,14 +35,28 @@
 // Implement evaluation of such three-argument (or multi-argument) constructs in the monadic evaluators.
 //-----------------------------------------------------------------------------------------------
 
+// Exercise 3. Create a new family of evaluation functions optionTraceEval.  
+// These evaluators should combine the effect of the original optional evaluator (optionEval) and the 
+// original tracing evaluator (traceEval).
+
+// This can be done in several ways, for instance corresponding to 
+// (A) return type int trace option, 
+//     for an evaluator that returns no trace if a computation fails; or 
+// (B) the result type int option trace, 
+//     for an evaluator that returns a partial trace up until some computation (eg division by zero) fails.
+
+// 3.1: Make both a standard explicit version of (A) and a monadic version.  
+// You need to create a new monad OptionTraceABuilder, among other things.
+
+// 3.2: Make both a standard explicit version of (B) and a monadic version.  
+// You need to create a new monad OptionTraceBBuilder, among other things.
+// ------------------------------------------------------------------------------------------------------
+
 type expr =
     | CstI of int
     | Prim of string * expr * expr
     | Prim1 of string * expr                //EXERCISE 1
     | Prim3 of string * expr * expr * expr // EXERCISE 2
-
-
-
 
 // ------------------------------------------------------------
 
