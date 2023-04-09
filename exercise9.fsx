@@ -25,10 +25,21 @@
 // let expr12 = Prim("+", CstI(7), Prim("choose", Prim1("ABS", CstI(-9)), CstI(10)))
 // --------------------------------------------------------------------------------------------------
 
+// Exercise 2. Extend the expression language and the monadic evaluators with a three-argument function such as 
+// +(e1, e2, e3) that is basically two applications of "+", as in, +(+(e1,e2),e3).  
+// Do this by adding a new constructor Prim3 of string * expr * expr * expr to the expr type.
+
+// You may alternatively add a more general facility for functions with 
+// n>=1 arguments, such as SUM(e1, ..., en), adding a suitable constructor to the expr type.
+
+// Implement evaluation of such three-argument (or multi-argument) constructs in the monadic evaluators.
+//-----------------------------------------------------------------------------------------------
+
 type expr =
     | CstI of int
     | Prim of string * expr * expr
-    | Prim1 of string * expr
+    | Prim1 of string * expr                //EXERCISE 1
+    | Prim3 of string * expr * expr * expr // EXERCISE 2
 
 
 
@@ -48,9 +59,16 @@ let rec eval1 e : int =
         | "*" -> v1 * v2
         | "/" -> v1 / v2
     | Prim1(op1, e1) ->       //<-- Allan's first shot EXERCISE1 
-        let v = eval1 e1               //  Not quite theere, but feel it should be 
-        match op1 with                       // something like this
+        let v = eval1 e1               //  
+        match op1 with                       // 
         | "ABS" -> abs v                     // abs is a built-in Math Operator (https://www.dotnetperls.com/math-fs)
+    | Prim3(op3, e1, e2, e3) -> //<-- For exercise 2
+        let v1 = eval1 e1
+        let v2 = eval1 e2
+        let v3 = eval1 e3
+        match op3 with
+        | "+" -> v1 + v2 + v3                               //---------------
+
 
 
 let opEval op v1 v2 : int =
@@ -61,8 +79,12 @@ let opEval op v1 v2 : int =
     //| "ABS" -> abs v1 ... for exercise 1 we could probably have used this and called OpEval with "opEval op v 0"
 
 let EvalOpt1 op v:int =   //<--- Allan's EXERCISE 1
-    match op with                                //to be used here and there for exercise 1
+    match op with                        //
     | "ABS" -> if v<0 then -v else v
+
+let EvalOpt3 op v1 v2 v3  =   //<--- Allan's EXERCISE 2
+    match op with                        
+    | "+" -> v1 + v2 + v3
 
 let rec eval2 e : int =
     match e with
@@ -74,7 +96,12 @@ let rec eval2 e : int =
     | Prim1(op1, e1) ->
         let v = eval2 e1
         match op1 with                  //<-- Allan's 1st shot EXERCISE 1
-        | "ABS" -> abs v                // Same as for eval1, not quite there
+        | "ABS" -> abs v                // Same as for eval1,
+    | Prim3(op3, e1, e2, e3) -> //<-- EXERCISE 2 Allan
+        let v1 = eval2 e1
+        let v2 = eval2 e2
+        let v3 = eval2 e3
+        EvalOpt3 op3 v1 v2 v3         // ---------------
 
 type IdentityBuilder() =
     member this.Bind(x, f) = f x
@@ -91,8 +118,13 @@ let rec eval3 e : int =
                   let! v2 = eval3 e2
                   return! opEval op v1 v2 }
     | Prim1(op, e1) ->             //<-- Allan's 1st shot EXERCISE 1
-        identM { let! v = eval3 e1            // not really sure about op here?
-                 return! EvalOpt1 op v}          
+        identM { let! v = eval3 e1            // 
+                 return! EvalOpt1 op v}      
+    | Prim3(op, e1, e2, e3) -> //<-- Allan's eexercise 2
+        identM { let! v1 = eval3 e1
+                 let! v2 = eval3 e2
+                 let! v3 = eval3 e3
+                 return! EvalOpt3 op v2 v2 v3}    
 
 // ------------------------------------------------------------
 
@@ -115,6 +147,19 @@ let rec optionEval1 e : int option =
                 | "+" -> Some(v1 + v2)
                 | "*" -> Some(v1 * v2)
                 | "/" -> if v2 = 0 then None else Some(v1 / v2)
+    | Prim3(op, e1, e2, e3) -> //<--- Allan's Exercise 2
+        match optionEval1 e1 with
+        | None -> None
+        | Some v1 ->
+            match optionEval1 e2 with
+            | None -> None
+            | Some v2 ->
+                match optionEval1 e3 with
+                | None -> None
+                | Some v3 ->
+                    match op with
+                    | "+" -> Some(v1 + v2 + v3)
+
 
 let opEvalOpt op v1 v2 : int option =
     match op with
@@ -125,6 +170,10 @@ let opEvalOpt op v1 v2 : int option =
 let opEvalOpt1 op v:int option =   //<--- Allan's EXERCISE 1
     match op with                                //to be used here and there for exercise 1
     | "ABS" -> Some(abs v)
+
+let opEvalOpt3 op v1 v2 v3:int option =   //<--- Allan's EXERCISE 1
+    match op with                                //to be used here and there for exercise 1
+    | "+" -> Some(v1 + v2 + v3)
                 
 let rec optionEval2 e : int option =
     match e with
@@ -137,6 +186,17 @@ let rec optionEval2 e : int option =
             // | None -> None                   //<-- Allan's EXERCISE 1 
             | None -> opEvalOpt1 op v1          // Very similar to optionEval1 just uses the function opEvalOpt1 
             | Some v2 -> opEvalOpt op v1 v2
+    | Prim3(op, e1, e2, e3) -> //<-- Allan's EXERCISE 2
+        match optionEval2 e1 with
+        | None -> None
+        | Some v1 ->
+            match optionEval2 e2 with
+            | None -> None                  //<-- Eg here (and in all similar sentences), we could add a structure to take into account the eg. 
+            | Some v2 ->                // if v2 is null then add v1 and v3. However, I reach the exercise as None should return None
+                match optionEval2 e3 with
+                | None -> None
+                | Some v3 -> 
+                    opEvalOpt3 op v1 v2 v3 //-------------------
 
 let optionFlatMap (f : 'a -> 'b option) (x : 'a option) : 'b option =
     match x with
@@ -163,6 +223,11 @@ let rec optionEval3 e : int option =
     | Prim1(op, e1) ->              //<-- Allan's Exercise 1
         optionM { let! v1 = optionEval3 e1      //Similar to identM only
                   return! opEvalOpt1 op v1}         //usoing opEvalOpt1 instead
+    | Prim3(op, e1, e2, e3) -> //<-- Allan's EXERCISE 2
+        optionM { let! v1 = optionEval3 e1
+                  let! v2 = optionEval3 e2
+                  let! v3 = optionEval3 e3
+                  return! opEvalOpt3 op v1 v2 v3} //---------------------
 
 // ------------------------------------------------------------                
 
@@ -179,6 +244,10 @@ let opEvalSet1 op v: int Set  = //<-- Allan's EXERCISE 1
     match op with                           // we have a set of one element     
     | "ABS" -> Set [abs v]         //with an absolute value
 
+let opEvalSet3 op v1 v2 v3: int Set  = //<-- Allan's EXERCISE 2 
+    match op with                            
+    | "+" -> Set [v1 + v2 + v3]     //----------------  
+
 let rec setEval1 e : int Set =
     match e with
     | CstI i -> Set [i]
@@ -194,7 +263,18 @@ let rec setEval1 e : int Set =
         let s = setEval1 e           
         let zss = Set.map (fun v -> opEvalSet1 op v) s 
         Set.unionMany zss                 //----------
-    
+    | Prim3(op, e1, e2, e3) ->  // <-- Allan's EXERCISE 2
+        let s1 = setEval1 e1 
+        let zss = Set.map (fun v1 -> 
+                    let s2 = setEval1 e2
+                    let yss = Set.map (fun v2 ->
+                            let s3 = setEval1 e3
+                            let xss = Set.map (fun v3 -> opEvalSet3 op v1 v2 v3) s3
+                            Set.unionMany xss) s2
+                    Set.unionMany yss) s1
+        Set.unionMany zss //----------------------------------------------------
+
+
 
 let setFlatMap (f : 'a -> 'b Set) (x : 'a Set) : 'b Set =
     Set.unionMany (Set.map f x);;
@@ -217,6 +297,11 @@ let rec setEval3 e : int Set =
     | Prim1(op, e) ->           //<-- Allan's EXERCISE 1
         setM { let! v = setEval3 e
                return! opEvalSet1 op v}         //-------------------
+    | Prim3(op, e1, e2, e3) -> //<-- Allan's EXERCISE 2
+        setM { let! v1 = setEval3 e1
+               let! v2 = setEval3 e2
+               let! v3 = setEval3 e3
+               return! opEvalSet3 op v1 v2 v3} //---------------------
 
 
 // ------------------------------------------------------------
@@ -239,6 +324,10 @@ let opEvalTrace1 op v : int trace =
     match op with
     | "ABS" -> (["ABS"], abs v)
 
+let opEvalTrace3 op v1 v2 v3 : int trace =
+    match op with
+    | "+" -> (["ABS"], v1 + v2 + v3)
+
 let rec traceEval1 e : int trace =
     match e with
     | CstI i -> ([], i)
@@ -251,6 +340,12 @@ let rec traceEval1 e : int trace =
         let (trace1, v) = traceEval1 e  // USes the same structure as above
         let (trace2, res) = opEvalTrace1 op v // not sure I completely understand it!
         (trace1 @ trace2, res)
+    | Prim3(op, e1, e2, e3) -> //<-- Allan's EXERCISE 2
+        let (trace1, v1) = traceEval1 e1
+        let (trace2, v2) = traceEval1 e2
+        let (trace3, v3) = traceEval1 e3
+        let (trace4, res) = opEvalTrace3 op v1 v2 v3
+        (trace1 @ trace2 @ trace3 @ trace4, res)  //--------------------------------
 
 let traceFlatMap (f : 'a -> 'b trace) (x : 'a trace) : 'b trace =
     let (trace1, v) = x
@@ -277,6 +372,11 @@ let rec traceEval3 e : int trace =
     | Prim1(op, e) ->       //<-- Allan's exercise 1
         traceM { let! v = traceEval3 e
                  return! opEvalTrace1 op v }//----------------
+    | Prim3(op, e1, e2, e3) -> //Allan's eXERCISE 2
+        traceM { let! v1 = traceEval3 e1
+                 let! v2 = traceEval3 e2
+                 let! v3 = traceEval3 e3
+                 return! opEvalTrace3 op v1 v2 v3} //--------------------------
 
 // ------------------------------------------------------------
 
