@@ -125,6 +125,11 @@ let rec bigListK n k =
   else bigListK (n-1) (fun res -> 1::k(res))
 
 // This does not work because it is not tail recursive and therefore uses a lot of memory.
+
+// -------  JONAS' COMMENT START ------- 
+// It has to remeber all the steps everytime it does the 1::k(res) part
+// -------  JONAS' COMMENT END ------- 
+
 // It could look something like this instead:
 
 let bigListK2 n =
@@ -135,6 +140,14 @@ let bigListK2 n =
   foo [] n
 
 // I sort of feel like above bigListK2 should work as tail recursive, but cannot find my way through why it does not??
+
+// -------  JONAS' COMMENT START ------- 
+// Jonas comment: it's not tail recursive since it's not an anonymous function, but an actual when you say "1::acc"
+// in the version below, however, there's an anonymous function, that says "when I'm evaluated, we'll do this"
+// and then we pass the function on, not the list. Functions are stored in the heap whereas a value
+// liek a list is stored in the stack
+// -------  JONAS' COMMENT END ------- 
+
 // ------- PETERS EXTENSION BEGIN --------------
 
 //The bigListK2 could also look like this, which would make it tail recursive (... and identical to bigListC from p. 213)
@@ -198,6 +211,15 @@ count (rightTree 270000) //This causes Stack overflow
 //Then we test the tail-recursive function CountA, that uses accumulation.
 countA 0 (leftTree 300000) //Mystisk! Peters mac kunne ikke køre denne function med leftTree.
 countA 0 (rightTree 100000000) // Men havde ingen problem med at køre denne absurde function på righttree - omend det tog lidt tid at udregne...
+
+// -------  JONAS' COMMENT START ------- 
+  // Det er fori den countA vi bruger har et indre recursive call på venstre side. 
+  // når den prøver at køre det med rightTree kører den sit indre call præcis én gang
+  // for hver ydre recursive lag, fordi alt til venstre er leafs. Derfor bliver den ikke 
+  // helt så "dyb" i dens rekursionsmønster. Derimod vil leftTree k'øre hele vejen til bunden
+  // i "indre" recursions, før den så skal køre hele lortet på alle leafs til højre
+  // så den får mange flere lag i stacken.
+// -------  JONAS' COMMENT END ------- 
 
 
 //-----8.4.2----
