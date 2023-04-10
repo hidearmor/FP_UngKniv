@@ -142,10 +142,10 @@ let bigListK2 n =
 // I sort of feel like above bigListK2 should work as tail recursive, but cannot find my way through why it does not??
 
 // -------  JONAS' COMMENT START ------- 
-// Jonas comment: it's not tail recursive since it's not an anonymous function, but an actual when you say "1::acc"
-// in the version below, however, there's an anonymous function, that says "when I'm evaluated, we'll do this"
-// and then we pass the function on, not the list. Functions are stored in the heap whereas a value
-// liek a list is stored in the stack
+// Jonas comment: it's not tail recursive since it's not an anonymous function, but an actual list, i.e. variable. 
+// When we say "1::acc" in the version below, however, there's an anonymous function, that says: 
+// "when I'm evaluated, we'll do this" and then we pass the function on, not the list. 
+// Functions are stored in the heap whereas a value like a list is stored in the stack
 // -------  JONAS' COMMENT END ------- 
 
 // ------- PETERS EXTENSION BEGIN --------------
