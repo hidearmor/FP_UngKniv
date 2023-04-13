@@ -511,23 +511,23 @@ let rec optionTraceEvalB1 e : int traceoptionB =
         // let (trace3, result) = opTraceEvalB2 op v1 v2
         // (trace1 @ trace2 @ trace3, result)
 
-let expr1 = Prim("+", CstI(7), Prim("*", CstI(9), CstI(10)))
-let honk1 = optionTraceEvalB1 expr1
+let expr7 = Prim("+", CstI(7), Prim("*", CstI(9), CstI(10)))
+let honk1 = optionTraceEvalB1 expr7
 
-let expr2 = Prim("+", CstI(7), Prim("/", CstI(9), CstI(0)))
-let honk2 = optionTraceEvalB1 expr2
+let expr8 = Prim("+", CstI(7), Prim("/", CstI(9), CstI(0)))
+let honk2 = optionTraceEvalB1 expr8
 
-let expr3 = Prim("/", CstI(7), Prim("*", CstI(9), CstI(0)))
-let honk3 = optionTraceEvalB1 expr3
+let expr9 = Prim("/", CstI(7), Prim("*", CstI(9), CstI(0)))
+let honk3 = optionTraceEvalB1 expr9
 
-let expr4 = Prim("choose", CstI(7), Prim("choose", CstI(9), CstI(13)))
-let honk4 = optionTraceEvalB1 expr4
+let expr10 = Prim("choose", CstI(7), Prim("choose", CstI(9), CstI(13)))
+let honk4 = optionTraceEvalB1 expr10
 
-let expr5 = Prim("*", expr4, Prim("choose", CstI(2), CstI(3)))
-let honk5 = optionTraceEvalB1 expr5
+let expr11 = Prim("*", expr4, Prim("choose", CstI(2), CstI(3)))
+let honk5 = optionTraceEvalB1 expr11
 
-let expr6 = Prim("+", CstI(7), Prim("choose", CstI(9), CstI(10)))
-let honk6 = optionTraceEvalB1 expr6
+let expr12 = Prim("+", CstI(7), Prim("choose", CstI(9), CstI(10)))
+let honk6 = optionTraceEvalB1 expr12
 
 // make the computaitonal expression version
 // look below
