@@ -21,7 +21,9 @@ let rec countA (accN: int) (t: BinTree<'a>) : int =
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
+(*
 countA 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
+*)
 // Version 1 END
 
 //version 2 BEGIN----------------
@@ -49,8 +51,9 @@ let rec countAC t acc cont =
     | Leaf -> cont acc
     | Node (left, _, right) -> countAC left (acc+1) (fun leftCount -> countAC right leftCount cont)
 
-(* Example *)
+(* Example 
 countAC t 0 id
+*)
 // ------------
 // Addtional attempts:
 
@@ -86,27 +89,22 @@ let rec bigListK n k =
 // It has to remeber all the steps everytime it does the 1::k(res) part
 
 // It could look something like this instead:
-
-let bigListK2 n =
-  let rec foo acc n =
-    match n with
-    | 0 -> acc
-    | _ -> foo (1::acc) (n-1)
-  foo [] n
-
-
-// -------  JONAS' COMMENT START ------- 
-// Jonas comment: it's not tail recursive since it's not an anonymous function, but an actual list, i.e. variable. 
-// When we say "1::acc" in the version below, however, there's an anonymous function, that says: 
-// "when I'm evaluated, we'll do this" and then we pass the function on, not the list. 
-// Functions are stored in the heap whereas a value like a list is stored in the stack
-// -------  JONAS' COMMENT END ------- 
-
-//The bigListK2 could also look like this, which would make it tail recursive (... and identical to bigListC from p. 213)
+// Observe that if you put the cons operator inside the parameter k in the anonymous function,
+// like below, it will not save the 1 on the stack each time, and instead save the function itself
+// and compute it when the inntermost part of the recursion is reached
 
 let rec bigListK3 n k = 
   if n = 0 then k []
   else bigListK3 (n-1) (fun res -> k(1::res))
+
+// alternative version 1
+// let bigListK2 n =
+//   let rec foo acc n =
+//     match n with
+//     | 0 -> acc
+//     | _ -> foo (1::acc) (n-1)
+//   foo [] n
+
 
 (* Assignment 8.4, HR 9.11 *)
 //First we define the tail-recursive function leftTreeC using continuation
@@ -144,6 +142,7 @@ let rec count = function (* from page HR 214 *)
     Leaf -> 0
   | Node(tl,n,tr) -> count tl + count tr + 1
 
+(*
 //Testing the count function on functions leftTree and rightTree
 count (leftTree 260000) //Peters mac can handle this 
 count (leftTree 270000) //This causes Stack overflow
@@ -153,6 +152,7 @@ count (rightTree 270000) //This causes Stack overflow
 //Then we test the tail-recursive function CountA, that uses accumulation.
 countA 0 (leftTree 300000) //Mystisk! Peters mac kunne ikke køre denne function med leftTree.
 countA 0 (rightTree 100000000) // Men havde ingen problem med at køre denne absurde function på righttree - omend det tog lidt tid at udregne...
+*)
 
 // -------  JONAS' COMMENT START ------- 
   // Det er fori den countA vi bruger har et indre recursive call på venstre side. 
@@ -171,6 +171,8 @@ let rec countC t c = (* from page HR 215 *)
   match t with
     Leaf -> c 0
   | Node(tl,n,tr) -> countC tl (fun vl -> countC tr (fun vr -> c(vl+vr+1)))
+
+(*
 
 // results
 countC (leftTree 5000000) id // Realtime: 5 sec
@@ -192,16 +194,15 @@ countAC (leftTree 20000000) 0 id // Realtime: 7 sec
 countAC (rightTree 20000000) 0 id // Realtime: 6 sec
 countAC (leftTree 40000000) 0 id // Realtime: 17,6 sec
 countAC (rightTree 40000000) 0 id // Realtime: 14,6 sec
+*)
 
 
 (* Assignment 8.5, HR 11.1 *)
-//Peters version
 //Rather simple sequence build using Seq.initInfinite and the function for odd numbers (fun i - 2*i+1)
 let oddNumbers = Seq.initInfinite (fun i -> 2*i+1)
 
 
 (* Assignment 8.6, HR 11.2 *)
-//Peters version
 //Again quite simple - måske lidt for blåøjet. Jeg bruger en enkelt (ikke særlig smart - burde laves som continuation) fact
 //funktion som en hjælper funktion til at genere sequences af alle factorials. 
 let rec factA = function
@@ -216,8 +217,9 @@ let rec facC n c =
 *)
 
 let fac = Seq.initInfinite (fun i -> factA (i, 1))
-(*Examples *)
+(*Examples 
 Seq.take 0 fac
 Seq.take 1 fac
 Seq.take 2 fac
 Seq.take 10 fac
+*)
