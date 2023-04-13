@@ -431,14 +431,14 @@ let random1 = new System.Random()
 
 type 'a traceoption = (string list * 'a) option
 
-let opTraceEval op v1 v2 : int traceoption =
+let opTraceEval op v1 v2 : int trace option =
     match op with
     | "+" -> Some(["+"], v1 + v2)
     | "*" -> Some(["*"], v1 * v2)
     | "/" -> if v2 = 0 then None else Some(["/"], v1 / v2)
     | "choose" -> Some(["choose"], if random1.NextDouble() > 0.5 then v1 else v2)
 
-let rec optionTraceEval1 e : int traceoption =
+let rec optionTraceEval1 e : int trace option =
     match e with
     | CstI i -> Some([], i)
     | Prim(op, e1, e2) ->
@@ -467,7 +467,7 @@ type optionTraceBuilder() =
  
 let optionTraceM = optionTraceBuilder();;
 
-let rec optionTraceEval3 e : int traceoption =
+let rec optionTraceEval3 e : int trace option =
     match e with
     | CstI i -> optionTraceM { return i }
     | Prim(op, e1, e2) ->
