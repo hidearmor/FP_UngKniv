@@ -101,7 +101,7 @@ let EvalOpt3 op v1 v2 v3  =   //<--- EXERCISE 2
     match op with                        
     | "+" -> v1 + v2 + v3
 
-let rec eval2 e : int = // <-- lige her boys
+let rec eval2 e : int =
     match e with
     | CstI i -> i
     | Prim(op, e1, e2) ->
@@ -144,7 +144,7 @@ let rec eval3 e : int =
 
 // Evaluator that may fail, return type: int option
 
-let rec optionEval1 e : int option = // <-- og her boys
+let rec optionEval1 e : int option =
     match e with
     | CstI i -> Some i
     | Prim(op, e1, e2) ->
@@ -431,14 +431,14 @@ let random1 = new System.Random()
 
 type 'a traceoption = (string list * 'a) option
 
-let opTraceEval op v1 v2 : int traceoption =
+let opTraceEval op v1 v2 : int trace option =
     match op with
     | "+" -> Some(["+"], v1 + v2)
     | "*" -> Some(["*"], v1 * v2)
     | "/" -> if v2 = 0 then None else Some(["/"], v1 / v2)
     | "choose" -> Some(["choose"], if random1.NextDouble() > 0.5 then v1 else v2)
 
-let rec optionTraceEval1 e : int traceoption =
+let rec optionTraceEval1 e : int trace option =
     match e with
     | CstI i -> Some([], i)
     | Prim(op, e1, e2) ->
@@ -467,7 +467,7 @@ type optionTraceBuilder() =
  
 let optionTraceM = optionTraceBuilder();;
 
-let rec optionTraceEval3 e : int traceoption =
+let rec optionTraceEval3 e : int trace option =
     match e with
     | CstI i -> optionTraceM { return i }
     | Prim(op, e1, e2) ->
@@ -483,16 +483,20 @@ let rec optionTraceEval3 e : int traceoption =
 
 type 'a traceoptionB = string list * 'a option
 
+type optTraceTypeB =
+    CstSomeI of int option
+    | PrimSome of string * optTraceTypeB * optTraceTypeB
+
 let randomB = new System.Random()
 
-let opTraceEvalB2 op v1 v2 : int traceoptionB =
+let opTraceEvalB2 op v1 v2 : int option trace =
     match op with
     | "+" -> ["+"], Some(v1 + v2)
     | "*" -> ["*"], Some(v1 * v2)
     | "/" -> if v2 = 0 then ["/"], None else ["/"], Some(v1 / v2)
     | "choose" -> ["choose"], if randomB.NextDouble() > 0.5 then Some(v1) else Some(v2)
 
-let rec optionTraceEvalB1 e : int traceoptionB =
+let rec optionTraceEvalB1 e : int option trace =
     match e with
     | CstI i -> [], Some i
     | Prim(op, e1, e2) ->
@@ -500,34 +504,27 @@ let rec optionTraceEvalB1 e : int traceoptionB =
         | (trace1, None) -> (trace1, None)
         | (trace1, Some(v1)) ->
             match optionTraceEvalB1 e2 with
-            | (trace2, None) -> (trace2, None)
+            | (trace2, None) -> (trace1@trace2, None)
             | (trace2, Some(v2)) ->
                 match opTraceEvalB2 op v1 v2 with
                 | (trace3, None) -> (trace1 @ trace2 @ trace3, None)
-                | trace3, Some(res) -> (trace1 @ trace2 @ trace3, Some(res))
+                | trace3, Some(res) -> 
+                    trace1 @ trace2 @ trace3, Some(res)
 
         // let (trace1, v1) = optionTraceEvalB1 e1
         // let (trace2, v2) = optionTraceEvalB1 e2
         // let (trace3, result) = opTraceEvalB2 op v1 v2
         // (trace1 @ trace2 @ trace3, result)
 
-let expr1 = Prim("+", CstI(7), Prim("*", CstI(9), CstI(10)))
-let honk1 = optionTraceEvalB1 expr1
+let exprB1 = Prim("+", CstI(7), Prim("*", CstI(9), CstI(10)))
+let honkB1 = optionTraceEvalB1 exprB1
 
-let expr2 = Prim("+", CstI(7), Prim("/", CstI(9), CstI(0)))
-let honk2 = optionTraceEvalB1 expr2
+let exprB2 = Prim("+", CstI(7), Prim("/", CstI(9), CstI(0)))
+let honkB2 = optionTraceEvalB1 exprB2
 
-let expr3 = Prim("/", CstI(7), Prim("*", CstI(9), CstI(0)))
-let honk3 = optionTraceEvalB1 expr3
-
-let expr4 = Prim("choose", CstI(7), Prim("choose", CstI(9), CstI(13)))
-let honk4 = optionTraceEvalB1 expr4
-
-let expr5 = Prim("*", expr4, Prim("choose", CstI(2), CstI(3)))
-let honk5 = optionTraceEvalB1 expr5
-
-let expr6 = Prim("+", CstI(7), Prim("choose", CstI(9), CstI(10)))
-let honk6 = optionTraceEvalB1 expr6
+let exprB3 = Prim("+", CstI(7), Prim("choose", CstI(9), CstI(10)))
+let exprB4 = Prim("choose", CstI(7), Prim("choose", CstI(9), CstI(13)))
+let exprB5 = Prim("*", expr4, Prim("choose", CstI(2), CstI(3)))
 
 // make the computaitonal expression version
 // look below
@@ -538,17 +535,18 @@ type optionTraceBuilderB() =
         | trace1, None -> trace1, None
         | trace1, Some (v1) ->
             match f v1 with
-            | trace2, None -> trace1@trace2, None
-            | trace2, Some (res) -> trace1 @ trace2, Some(res)
-    member this.Return x = [], Some x
+            | trace2, None -> trace1 @ trace2, None
+            | trace2, Some (res) -> 
+                trace1 @ trace2, Some(res)
+    member this.Return x = [], x
     member this.ReturnFrom x = x
  
 let optionTraceMB = optionTraceBuilderB();;
 
 // CE means COMPUTATIONAL EXPRESSION
-let rec optionTraceEvalB_CE e : int traceoptionB =
+let rec optionTraceEvalB_CE e : int option trace =
     match e with
-    | CstI i -> optionTraceMB { return i }
+    | CstI i -> optionTraceMB { return Some(i) }
     | Prim(op, e1, e2) ->
         optionTraceMB { let! v1 = optionTraceEvalB_CE e1
                         let! v2 = optionTraceEvalB_CE e2
@@ -558,13 +556,4 @@ let exprB_CE1 = Prim("+", CstI((7)), Prim("*", CstI((9)), CstI((10))))
 let honkBCE1 = optionTraceEvalB_CE exprB_CE1
 
 let exprB_CE2 = Prim("/", CstI((7)), Prim("*", CstI((9)), CstI((0))))
-let honkB2 = optionTraceEvalB1 exprB_CE2
-let honkBCE2 = optionTraceEvalB_CE exprB_CE2
-
-// NOTE! The Bind function is written with trace1@trace2 in the second match. 
-// In the optionTraceEvalB1 trace1 and trace 2 are NOT appended in the second match. 
-// However the two honk functions above (honkB2 and honkBCE2) evaluate to the same result. 
-// Changing the optionTraceEvalB1 function to append trace 1 and 2 in the second match changes nothing,
-// but changing the Bind function to NOT append changes the result of honkBCE2, so that the "*" operator doesn't
-// get included in the operator trace list. 
-// There might be a great explaination to this, but I can't see it.
+let honkB_CE2 = optionTraceEvalB_CE exprB_CE2
