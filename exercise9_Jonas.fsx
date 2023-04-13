@@ -489,20 +489,17 @@ type optTraceTypeB =
 
 let randomB = new System.Random()
 
-let opTraceEvalB2 op v1 v2 : int traceoptionB =
+let opTraceEvalB2 op v1 v2 : int option trace =
     match op with
     | "+" -> ["+"], Some(v1 + v2)
     | "*" -> ["*"], Some(v1 * v2)
     | "/" -> if v2 = 0 then ["/"], None else ["/"], Some(v1 / v2)
     | "choose" -> ["choose"], if randomB.NextDouble() > 0.5 then Some(v1) else Some(v2)
 
-let rec optionTraceEvalB1 e : int traceoptionB =
+let rec optionTraceEvalB1 e : int option trace =
     match e with
-    | CstSomeI i ->
-        match i with
-        | None -> [], None
-        | Some v -> [], Some v
-    | PrimSome(op, e1, e2) ->
+    | CstI i -> [], Some i
+    | Prim(op, e1, e2) ->
         match optionTraceEvalB1 e1 with
         | (trace1, None) -> (trace1, None)
         | (trace1, Some(v1)) ->
@@ -519,13 +516,13 @@ let rec optionTraceEvalB1 e : int traceoptionB =
         // let (trace3, result) = opTraceEvalB2 op v1 v2
         // (trace1 @ trace2 @ trace3, result)
 
-let exprB1 = PrimSome("+", CstSomeI(Some(7)), PrimSome("*", CstSomeI(Some(9)), CstSomeI(Some(10))))
+let exprB1 = Prim("+", CstI(7), Prim("*", CstI(9), CstI(10)))
 let honkB1 = optionTraceEvalB1 exprB1
 
-let exprB2 = PrimSome("/", CstSomeI(Some(7)), PrimSome("*", CstSomeI(Some(9)), CstSomeI(Some(0))))
+let exprB2 = Prim("+", CstI(7), Prim("/", CstI(9), CstI(0)))
 let honkB2 = optionTraceEvalB1 exprB2
 
-let exprB3 = PrimSome("+", CstSomeI(Some(7)), PrimSome("choose", CstSomeI(Some(9)), CstSomeI(Some(10))))
+let exprB3 = Prim("+", CstI(7), Prim("choose", CstI(9), CstI(10)))
 let exprB4 = Prim("choose", CstI(7), Prim("choose", CstI(9), CstI(13)))
 let exprB5 = Prim("*", expr4, Prim("choose", CstI(2), CstI(3)))
 
@@ -547,16 +544,16 @@ type optionTraceBuilderB() =
 let optionTraceMB = optionTraceBuilderB();;
 
 // CE means COMPUTATIONAL EXPRESSION
-let rec optionTraceEvalB_CE e : int traceoptionB =
+let rec optionTraceEvalB_CE e : int option trace =
     match e with
-    | CstSomeI i -> optionTraceMB { return i }
-    | PrimSome(op, e1, e2) ->
+    | CstI i -> optionTraceMB { return Some(i) }
+    | Prim(op, e1, e2) ->
         optionTraceMB { let! v1 = optionTraceEvalB_CE e1
                         let! v2 = optionTraceEvalB_CE e2
                         return! opTraceEvalB2 op v1 v2 }
 
-let exprB_CE1 = PrimSome("+", CstSomeI(Some(7)), PrimSome("*", CstSomeI(Some(9)), CstSomeI(Some(10))))
+let exprB_CE1 = Prim("+", CstI((7)), Prim("*", CstI((9)), CstI((10))))
 let honkBCE1 = optionTraceEvalB_CE exprB_CE1
 
-let exprB_CE2 = PrimSome("/", CstSomeI(Some(7)), PrimSome("*", CstSomeI(Some(9)), CstSomeI(Some(0))))
+let exprB_CE2 = Prim("/", CstI((7)), Prim("*", CstI((9)), CstI((0))))
 let honkB_CE2 = optionTraceEvalB_CE exprB_CE2
