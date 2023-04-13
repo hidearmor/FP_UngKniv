@@ -101,7 +101,7 @@ let EvalOpt3 op v1 v2 v3  =   //<--- EXERCISE 2
     match op with                        
     | "+" -> v1 + v2 + v3
 
-let rec eval2 e : int =
+let rec eval2 e : int = // <-- lige her boys
     match e with
     | CstI i -> i
     | Prim(op, e1, e2) ->
@@ -144,7 +144,7 @@ let rec eval3 e : int =
 
 // Evaluator that may fail, return type: int option
 
-let rec optionEval1 e : int option =
+let rec optionEval1 e : int option = // <-- og her boys
     match e with
     | CstI i -> Some i
     | Prim(op, e1, e2) ->
