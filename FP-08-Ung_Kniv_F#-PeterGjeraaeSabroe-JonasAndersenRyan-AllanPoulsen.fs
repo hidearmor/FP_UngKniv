@@ -12,25 +12,28 @@ type BinTree<'a> = (* Page 133 *)
 // I have made two versions, cf. below
 
 // Version 1 BEGIN
-let rec countA (accN: int) (t: BinTree<'a>) : int = 
-  match t with
-  | Leaf -> accN
-  | Node (l , n, r) -> countA (countA (accN + 1) l) r
+// let rec countA (accN: int) (t: BinTree<'a>) : int = 
+//   match t with
+//   | Leaf -> accN
+//   | Node (l , n, r) -> countA (countA (accN + 1) l) r
+
+
 // Should basically do the same as version 2 - only in int -> BinTree<'a> -> int
 // Not tail recursive as both calls to countA in last sentence cannot both be tail recursive.
 
 (* Example *)
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
+
 (*
 countA 0 t  //<-- This call works for a function int -> BinTree<'a> -> int
 *)
 // Version 1 END
 
 //version 2 BEGIN----------------
-// let rec countA2  (t: BinTree<'a>) (accN: int): int = 
-//   match t with
-//   | Leaf -> accN  //<-- Accumulate until  Leaf
-//   | Node (l , n, r) -> countA2 r (countA2 l (1 + accN)) 
+let rec countA  (t: BinTree<'a>) (accN: int): int = 
+  match t with
+  | Leaf -> accN  //<-- Accumulate until  Leaf
+  | Node (l , n, r) -> countA r (countA l (1 + accN)) 
 // Above is more or less taken from Patrick's "sumA" example in video for lecture FP 23 6.1, with the 
 // main difference that we count the leaves (1+accN) and nut sum them as in the video
 // This works well with the example below 
