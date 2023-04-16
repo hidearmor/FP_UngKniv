@@ -1,4 +1,4 @@
-// Assignment 10
+x// Assignment 10
 
 // These exercises concern parallel programming in F#.
 
@@ -59,6 +59,7 @@ let rec ntimes (f : unit -> 'a) n =
 let bigArray = Array.init 5000000 (fun _ -> r10000 ());;
 
 #time;;
+open System.Collections.Generic
 
 Array.map isPrime bigArray;;
 // Timing on Allan's laptop, Real: 00:00:00.136, CPU: 00:00:00.125
@@ -189,4 +190,48 @@ let parallelNoOfPrimes2 = parallelPrimes |> Array.filter isPrime4 |> Array.lengt
 // Roughly four times faster in Real time on ALlan's laptop.
 Array.Parallel.map isPrime4 parallelPrimes |> Array.filter (fun x -> x = true) |> Array.length
 
-// ALLAN's EXERCISE 3 END -----------------------------------
+// ALLAN's EXERCISE 4 END -----------------------------------
+
+// ----------   JONAS' sequence version of exercise 4  BEGIN  --------------
+
+// the whole idea of this one is to skip the step of first going through all the numers
+// and then going through all the numbers filtering again, but instead utilizing the
+// option type to filter out all non-None, since it requires very little performance
+
+let parallelPrimes2  =
+    let tasks = 
+        [ for i in 0..10000000 
+        do yield 
+            async{if isPrime4 i then return Some i else return None}]
+    Async.RunSynchronously (Async.Parallel tasks) |> Array.choose id
+
+// Same idea as above
+let parallelNoOfPrimes = parallelPrimes2.Length
+
+// ----------   JONAS' sequence version of exercise 4  END  --------------
+
+// ---- here is an alternative version where we use a list, 
+// since it's faster to insert than with an array
+
+(*
+let parallelPrimesInRange range =
+    let isPrime n =
+        let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
+        n >= 2 && testDiv 2
+
+    let primes = List()
+
+    let tasks = 
+        [ for i in range do yield async {
+            if isPrime i then
+                primes.Add(i)
+            else
+                () } ]
+        |> Async.Parallel
+
+    tasks 
+    |> Async.RunSynchronously 
+    |> ignore
+
+    primes
+*)
