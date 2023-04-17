@@ -104,10 +104,10 @@ let factors200000 = Array.Parallel.init 200000 factors;;
 // ALLAN'S EXERCISE 3 BEGIN -----------------------------
 
 // code from parallelfib.fs
-let histogram = Array.init 200000 (fun i -> 0)
-let incr i = histogram.[i] <- histogram.[i] + 1                 //<-- What is to be changed
+let histogramold = Array.init 200000 (fun i -> 0)
+let incr i = histogramold.[i] <- histogramold.[i] + 1                 //<-- What is to be changed
 Array.iter (fun fs -> List.iter incr fs) factors200000;;
-histogram;;
+histogramold;;
 // Timing on Allan's laptop, Real: 00:00:00.007, CPU: 00:00:00.000
 
 // New version
@@ -123,6 +123,12 @@ let incrNew i = seq { for j = 0 to histogramNew.Length - 1 do    //<-- Iterate o
 //Exercise not finished. Still Work In Progress.
 
 // ALLAN'S EXERCISE 3 END ---------------------------------
+
+// PETERS EXERCISE 3 BEGIN --------------
+let histogram =
+    let totalprimes = Array.fold (fun x xs -> x@xs) [] factors200000
+    let result = totalprimes |>  Seq.countBy id
+    result
 
 
 // --------------- EXERCISE 4 ----------------------
