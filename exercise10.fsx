@@ -110,20 +110,9 @@ Array.iter (fun fs -> List.iter incr fs) factors200000;;
 histogramold;;
 // Timing on Allan's laptop, Real: 00:00:00.007, CPU: 00:00:00.000
 
-// New version
-let histogramNew = Array.init 200000 (fun i -> 0)  //<-- Same as above
-
-// This is instead of let incr i = histogram.[i] <- histogram.[i] + 1  
-let incrNew i = seq { for j = 0 to histogramNew.Length - 1 do    //<-- Iterate over the length of histogramNew
-                                        if j=i then j, histogramNew.[j]+1     //<-- when you meet the element i in question then choose the next element from histogramNew and return j and the next element in histogramNew
-                                        else j, histogramNew[j]
-                                        }                                       //<-- else choose the element i and return i (which is also j) and the corresponding element in histogramNew
-
-// Array.iter (fun fs -> List.iter incrNew fs) factors200000;; //I cannot see how to change this just now...
-//Exercise not finished. Still Work In Progress.
-
 // ALLAN'S EXERCISE 3 END ---------------------------------
 
+<<<<<<< HEAD
 // PETERS EXERCISE 3 BEGIN  - EVERYTHING COMMENTED OUT FOR NOW --------------
 // let append3 a b =
 //     let rec append = function
@@ -149,6 +138,12 @@ let incrNew i = seq { for j = 0 to histogramNew.Length - 1 do    //<-- Iterate o
 // Array.iter (fun fs -> fun ()Seq.countBy id fs) factors200000;;
 // histogramold;;
 
+=======
+// PETERS EXERCISE 3 BEGIN --------------
+let histogram =
+    let totalprimes = Array.fold (fun x xs -> x@xs) [] factors200000 // laver et array med lister af ints til én list af ints
+    totalprimes |>  Seq.countBy id  // tæller antallet af forekomster og returner dem med deres count
+>>>>>>> 859125eef0bc387d7bd3ce23e1906857bcf24b83
 
 
 // --------------- EXERCISE 4 ----------------------
