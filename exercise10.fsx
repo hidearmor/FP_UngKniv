@@ -41,7 +41,7 @@ let isPrime n =
     let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
     n>=2 && testDiv 2;;
 
-let factors n =
+let rec factors n =
     let rec factorsIn d m =
         if m <= 1 then []
         else if m % d = 0 then d :: factorsIn d (m/d) else factorsIn (d+1) m
@@ -124,11 +124,31 @@ let incrNew i = seq { for j = 0 to histogramNew.Length - 1 do    //<-- Iterate o
 
 // ALLAN'S EXERCISE 3 END ---------------------------------
 
-// PETERS EXERCISE 3 BEGIN --------------
-let histogram =
-    let totalprimes = Array.fold (fun x xs -> x@xs) [] factors200000
-    let result = totalprimes |>  Seq.countBy id
-    result
+// PETERS EXERCISE 3 BEGIN  - EVERYTHING COMMENTED OUT FOR NOW --------------
+// let append3 a b =
+//     let rec append = function
+//         | cont, [], ys -> cont ys
+//         | cont, x::xs, ys -> append ((fun acc -> cont (x::acc)), xs, ys)
+//     append(id, a, b)
+
+
+// let histogram =
+//     let totalprimes = Array.fold (fun x xs -> append3 x xs) [] factors5000
+//     totalprimes |>  Seq.countBy id
+
+// Seq.init 
+
+// let histogram = for x in factors200000 do async{let result = Seq.countBy id x
+//     return result}
+// let run () = Seq.init;;
+
+// Array.Parallel.collect 
+
+// let histogramold = Array.init 200000 (fun i -> 0)
+// let incr i = histogramold.[i] <- histogramold.[i] + 1                 //<-- What is to be changed
+// Array.iter (fun fs -> fun ()Seq.countBy id fs) factors200000;;
+// histogramold;;
+
 
 
 // --------------- EXERCISE 4 ----------------------
