@@ -5,14 +5,14 @@
 // You should build on the files in the example code, found in folder
 // "parProgExamples" in the code repository.
 
-// --------------- EXERCISE 1 --------------
+// --------------- EXERCISE 1 - DESCRIPTION --------------
 // Run the slow Fibonacci computations from the lecture's
 // examples on your own computer, file parallelfib.fs.  Use the #time
 // directive to turn on timing, and see what is the best speed-up you can
 // obtain for computing, say, the first 43 Fibonacci numbers using
 // Async.Parallel.  This may be quite different on MS .NET than on Mono.
 
-// ALLAN'S EXERCISE 1 BEGIN --------------------------
+// -----    EXERCISE 1 BEGIN --------------------------
 // slowfib from parallelfib.fs:
 let rec slowfib n = if n<2 then 1.0 else slowfib(n-1) + slowfib(n-2);;
 // Allan's laptop (slowfib 43;;): Real 00:00:01.857, CPU 00:00:01.812
@@ -28,14 +28,14 @@ let parallelFibs =
     Async.RunSynchronously (Async.Parallel tasks);;
 // Allan's laptop: Real 00:00:01.335, CPU 00:00:03.218
 // Real time, more than twice as fast...
-// ALLAN'S EXERCISE 1 END ----------------------------
+// --------    EXERCISE 1 END ----------------------------
 
 
 // --------------- EXERCISE 2 ---------------
 // Similarly, run the prime factorization example on your own
 // computer, and see what speedup you get, file primeFactors.fs.
 
-// ALLAN's EXERCISE 2 BEGIN ------------------------
+// --------    EXERCISE 2 BEGIN ------------------------
 // code from primeFactors.fs:
 let isPrime n =
     let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
@@ -78,118 +78,121 @@ Array.init 200000 factors;;
 let factors200000 = Array.Parallel.init 200000 factors;;
 // Timing on Allan's laptop, Real: 00:00:01.248, CPU: 00:00:08.421
 
-// ALLAN'S EXERCISE 2 END ------------------------------
+// --------    EXERCISE 2 END ------------------------------
 
-//---------------- EXERCISE 3 ---------------
-// The lecture's construction of a histogram (counting the
-// numbers of times that each prime factor 2, 3, 5, 7, 11 ... appears)
-// uses a side effect in the assignment
+//---------------- EXERCISE 3 DESCRIPTION ---------------
 
-//      histogram.[i] <- histogram.[i] + 1 
+        // The lecture's construction of a histogram (counting the
+        // numbers of times that each prime factor 2, 3, 5, 7, 11 ... appears)
+        // uses a side effect in the assignment
 
-// But side effects should be avoided.  Program the histogram
-// construction so that it does not use side effects but purely
-// functional programming.  There are several useful functions in the Seq
-// module.  The final result does not have to be an
+        //      histogram.[i] <- histogram.[i] + 1 
 
-// int[] array,
+        // But side effects should be avoided.  Program the histogram
+        // construction so that it does not use side effects but purely
+        // functional programming.  There are several useful functions in the Seq
+        // module.  The final result does not have to be an
 
-// but could be a
+        // int[] array,
 
-// seq<int * int>
+        // but could be a
 
-// of pairs (p, n) where p is a prime factor and n is the number of times
-// p appears in the array of lists of prime factors.
+        // seq<int * int>
 
-// ALLAN'S EXERCISE 3 BEGIN -----------------------------
+        // of pairs (p, n) where p is a prime factor and n is the number of times
+        // p appears in the array of lists of prime factors.
 
-// code from parallelfib.fs
-let histogramold = Array.init 200000 (fun i -> 0)
-let incr i = histogramold.[i] <- histogramold.[i] + 1                 //<-- What is to be changed
-Array.iter (fun fs -> List.iter incr fs) factors200000;;
-histogramold;;
-// Timing on Allan's laptop, Real: 00:00:00.007, CPU: 00:00:00.000
+// -----    EXERCISE 3 - START  --------
 
-// ALLAN'S EXERCISE 3 END ---------------------------------
+// THis version, which is not parrallel, is quicker to build than the ones below
+// we think this can be because the Sequence library is highly optimized and
+// and the map function is not as optimized. And finally the bottom one 
+// they both take 00:00:00:000 to run
 
-// PETERS EXERCISE 3 BEGIN  - EVERYTHING COMMENTED OUT FOR NOW --------------
-// let append3 a b =
-//     let rec append = function
-//         | cont, [], ys -> cont ys
-//         | cont, x::xs, ys -> append ((fun acc -> cont (x::acc)), xs, ys)
-//     append(id, a, b)
+let hist2 =
+    Seq.ofArray factors200000
+        |> Seq.concat
+        |> Seq.countBy id
+// Real: 00:00:00.001, CPU: 00:00:00.001, GC gen0: 0, gen1: 0, gen2: 0
+// val hist2: seq<int * int>
 
-let sift a sq = Seq.filter (fun n -> n % a <> 0) sq
+// ---   alternative versions   ---
 
-let rec sieve sq =
-  Seq.delay (fun () -> 
-               let p = Seq.item 0 sq
-               Seq.append
-                (Seq.singleton p)
-                (sieve (sift p (Seq.skip 1 sq))))
-
-let primes = sieve (Seq.initInfinite (fun i -> i + 2) |> Seq.takeWhile (fun n -> n <= 448))
-
-let count (arr: int list array) n = 
-    match arr
-    let rec counter (xs: int list) n1 acc =
-        match xs with
-        |[] -> acc
-        | x::xs -> if x=n1 then counter xs n1 (acc+1) else counter xs n1 (acc)
-    
+// PARALLEL VERSION - THAT IS SLOWER
+// let hist2Parallel =
+//     factors200000
+//     |> Array.Parallel.map (fun f -> Seq.ofList f)
+//     |> Seq.concat
+//     |> Seq.countBy id
+// Real: 00:00:00.003, CPU: 00:00:00.018, GC gen0: 0, gen1: 0, gen2: 0
+// val hist2Parallel: seq<int * int>
 
 
+// A more manual version here:
+// why is this significantly slower?
+
+// let hist2Async =
+//     let honk =
+//         async {
+//             let! factorSequences = 
+//                 Async.Parallel (Array.map (fun f -> async { return Seq.ofList f }) factors200000)
+//             let factors = 
+//                 Seq.concat factorSequences
+//             let result =
+//                 Seq.countBy id factors
+//             return result
+//         }
+//     Async.RunSynchronously(honk)
+// Real: 00:00:00.280, CPU: 00:00:01.372, GC gen0: 41, gen1: 4, gen2: 1
+// val hist2Async: seq<int * int>
+
+// -----    EXERCISE 3 - END  --------
 
 
-// let histogram =
-//     let totalprimes = Array.fold (fun x xs -> append3 x xs) [] factors5000
-//     totalprimes |>  Seq.countBy id
+// --------------- EXERCISE 4 - DESCRIPTION ----------------------
+    // Find the fastest way on your hardware to count the number
+    // of prime numbers between 1 and 10 million (the correct count is
+    // 664579).  Use this F# function to determine whether a given number n
+    // is prime:
 
-// Seq.init 
+    // let isPrime n =
+    //     let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
+    //     n>=2 && testDiv 2;;
 
-// let histogram = for x in factors200000 do async{let result = Seq.countBy id x
-//     return result}
-// let run () = Seq.init;;
+    // or if you believe it would be faster in C, C# or Java, you may use this version:
 
-// Array.Parallel.collect 
+    // private static boolean isPrime(int n) {
+    //   int k = 2;
+    //   while (k * k <= n && n % k != 0)
+    //     k++;
+    //   return n >= 2 && k * k > n;
+    // }
 
-// let histogramold = Array.init 200000 (fun i -> 0)
-// let incr i = histogramold.[i] <- histogramold.[i] + 1                 //<-- What is to be changed
-// Array.iter (fun fs -> fun ()Seq.countBy id fs) factors200000;;
-// histogramold;;
+    // Remember to use parallel programming to the extent possible.
 
-// PETERS EXERCISE 3 BEGIN --------------
-let histogram =
-    let totalprimes = Array.fold (fun x xs -> x@xs) [] factors200000 // laver et array med lister af ints til én list af ints
-    totalprimes |>  Seq.countBy id  // tæller antallet af forekomster og returner dem med deres count
+// ----------   EXERCISE 4  BEGIN  --------------
 
-
-// --------------- EXERCISE 4 ----------------------
-// Find the fastest way on your hardware to count the number
-// of prime numbers between 1 and 10 million (the correct count is
-// 664579).  Use this F# function to determine whether a given number n
-// is prime:
-
-// let isPrime n =
-//     let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
-//     n>=2 && testDiv 2;;
-
-// or if you believe it would be faster in C, C# or Java, you may use this version:
-
-// private static boolean isPrime(int n) {
-//   int k = 2;
-//   while (k * k <= n && n % k != 0)
-//     k++;
-//   return n >= 2 && k * k > n;
-// }
-
-// Remember to use parallel programming to the extent possible.
-
-// ALLAN'S EXERCISE 4 BEGIN ----------------
 // Calculating prime as per exercise description
 let isPrime4 n =
     let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
     n>=2 && testDiv 2;;
+
+// the whole idea of this one is to skip the step of first going through all the numers
+// and then going through all the numbers filtering again, but instead utilizing the
+// option type to filter out all non-None, since it requires very little performance
+
+let parallelPrimes2  =
+    let tasks = 
+        async { return seq {for i in 0..10000000 do if isPrime4 i then i}}
+    Seq.length(Async.RunSynchronously (tasks))
+// Real: 00:00:07.412, CPU: 00:00:11.018, GC gen0: 0, gen1: 0, gen2: 0
+// val parallelPrimes2: int = 664579
+
+// ----------   EXERCISE 4  END  --------------
+
+
+
+// --------  ALTERNATIVE VERSION -  EXERCISE 4 BEGIN ----------------
 
 // A WAY NON-PARALLEL TO CALCULATE THE NUMBER OF PRIMES ---------------
 // Returns each prime in a list where everything else is 0
@@ -229,48 +232,4 @@ let parallelNoOfPrimes2 = parallelPrimes |> Array.filter isPrime4 |> Array.lengt
 // Roughly four times faster in Real time on ALlan's laptop.
 Array.Parallel.map isPrime4 parallelPrimes |> Array.filter (fun x -> x = true) |> Array.length
 
-// ALLAN's EXERCISE 4 END -----------------------------------
-
-// ----------   JONAS' sequence version of exercise 4  BEGIN  --------------
-
-// the whole idea of this one is to skip the step of first going through all the numers
-// and then going through all the numbers filtering again, but instead utilizing the
-// option type to filter out all non-None, since it requires very little performance
-
-let parallelPrimes2  =
-    let tasks = 
-        [ for i in 0..10000000 
-        do yield 
-            async{if isPrime4 i then return Some i else return None}]
-    Async.RunSynchronously (Async.Parallel tasks) |> Array.choose id
-
-// Same idea as above
-let parallelNoOfPrimes = parallelPrimes2.Length
-
-// ----------   JONAS' sequence version of exercise 4  END  --------------
-
-// ---- here is an alternative version where we use a list, 
-// since it's faster to insert than with an array
-
-(*
-let parallelPrimesInRange range =
-    let isPrime n =
-        let rec testDiv a = a*a > n || n % a <> 0 && testDiv (a+1)
-        n >= 2 && testDiv 2
-
-    let primes = List()
-
-    let tasks = 
-        [ for i in range do yield async {
-            if isPrime i then
-                primes.Add(i)
-            else
-                () } ]
-        |> Async.Parallel
-
-    tasks 
-    |> Async.RunSynchronously 
-    |> ignore
-
-    primes
-*)
+// --------  ALTERNATIVE VERSION  EXERCISE 4 END -----------------------------------
