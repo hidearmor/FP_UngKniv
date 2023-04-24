@@ -1,4 +1,4 @@
-module QueueWithMistake
+// module QueueWithMistake
 
 // Lock-based queue with memory management mistake
 // sestoft@itu.dk * 2013-10-20
@@ -58,13 +58,28 @@ type SentinelLockQueue() =
     tail.Next <- Some node;
     tail <- node
 
-  member this.get() =
+  member this.get() = // this method seems legit, besides the -999 thing
     if (head.Next = None)
-      then -999
-      else
-        let first = head
-        head <- first.Next.Value;
-        head.Item
+      then -999  // the list is empty. this should be an option that returns None here ?
+
+      // else  // ORIGINAL VERSION
+      //   let first = head
+      //   head <- first.Next.Value // this is a mutable structure
+      //   head.Item
+
+        // numbers with 20000000
+        // Real: 00:00:24.751, CPU: 00:00:25.250, GC gen0: 7143, gen1: 2382, gen2: 1
+        // numbers with 100000000
+        // Real: 00:01:59.079, CPU: 00:01:59.948, GC gen0: 35564, gen1: 11857, gen2: 1
+
+      else    // NEW VERSION
+        let first = head.Next.Value // get the node, not the Option<Node>
+        head.Next <- first.Next    // we keep the dummy as the head
+        first.Item
+        // numbers with 20000000
+        // Real: 00:00:14.974, CPU: 00:00:15.517, GC gen0: 6705, gen1: 439, gen2: 1
+        // numbers with 100000000
+        // Real: 00:01:49.516, CPU: 00:01:53.002, GC gen0: 26350, gen1: 8791, gen2: 4
 
 let time f =
   let start = System.DateTime.Now in
@@ -73,10 +88,11 @@ let time f =
   (res, finish - start)
 
 let run() =
-  let iterations = 20000000
+  // let iterations = 20000000
+  let iterations = 1000000000
   let noQueues = 20
   let queues = Array.init noQueues (fun _ -> SentinelLockQueue())
-  let doIter j =
+  let doIter j =  // a guess could be that it should be a tail-recursive thing
     queues.[j].put(42);
     for i in 0 .. iterations-1 do
       queues.[j].put(i);
@@ -85,3 +101,5 @@ let run() =
   for j in 0 .. noQueues-1 do
     let (_,t) = time (fun () -> doIter j)
     printfn "Qno. %2d\t %10d %A\n" j (queues.[j].get()) t
+
+run();;
