@@ -89,7 +89,7 @@ let time f =
 
 let run() =
   // let iterations = 20000000
-  let iterations = 1000000000
+  let iterations = 100000000
   let noQueues = 20
   let queues = Array.init noQueues (fun _ -> SentinelLockQueue())
   let doIter j =  // a guess could be that it should be a tail-recursive thing
