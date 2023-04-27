@@ -137,13 +137,14 @@ merge(list4, list3)
 
 // the function merge(xs, ys) merges and sorts two lists, and the different test cases exhibits this.
 
+//(’a -> ’a * ’a) -> (’a * ’a -> ’a) -> (’a -> bool) -> ’a -> ’a
 let divideAndConquer split merge indivisible p = 
-    let result = []
-    let rec dc p res = 
+    let rec dc p = 
         if indivisible p
-            then merge p
+            then p
             else 
                 let x,y = split p
-                dc y
-                dc x
+                merge((dc y),(dc x))
     dc p
+
+divideAndConquer split merge indivisible [22;746;931;975;200];;
