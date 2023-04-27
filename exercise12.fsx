@@ -110,3 +110,40 @@ let splitTest1 = []
 let splitTest2 = [1]
 let splitTest3 = [1; 2]
 let splitTest4 = [1; 2; 3]
+
+// the functions splits the list xs at half its length. If the list contains an uneven amount of elements
+// the "right" list will be one element larger than the "left" list. This also aplies if the list has exactly one
+// element. NOTE that the split function doesn't work on the empty list. 
+
+
+let indivisible xs = if List.length xs < 2 then true else false
+
+// the function indivisible xs returns true if the list contains 0 or 1 element, else it returns false
+
+let rec merge(xs, ys) = 
+    match xs, ys with
+    | xs, [] -> xs
+    | [], ys -> ys
+    | x::xs', y::ys' -> if x < y then x::merge(xs', ys) else y::merge(xs, ys')
+
+let list1 = []
+let list2 = [5]
+let list3 = [2; 4; 7; 8]
+let list4 = [1; 3; 6; 7; 23]
+
+merge(list1, list2)
+merge(list3, list1)
+merge(list4, list3)
+
+// the function merge(xs, ys) merges and sorts two lists, and the different test cases exhibits this.
+
+let divideAndConquer split merge indivisible p = 
+    let result = []
+    let rec dc p res = 
+        if indivisible p
+            then merge p
+            else 
+                let x,y = split p
+                dc y
+                dc x
+    dc p
