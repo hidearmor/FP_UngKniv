@@ -74,7 +74,7 @@ let rec chkHeapProperty h =
 
 let rec map f h = 
     match h with
-    | EmptyHP -> EmptyHP
+    | EmptyHP -> raise (HeapError "Error")
     | HP(x, l, r) -> HP(f x, map f l, map f r)
 
 // the function above traverses through the tree, calling the function f on every Node value x, and returning 
@@ -147,10 +147,23 @@ let divideAndConquer split merge indivisible p =
                 merge((dc y),(dc x))
     dc p
 
-divideAndConquer split merge indivisible [22;746;931;975;200];;
+// divideAndConquer split merge indivisible [22;746;931;975;200];;
 // val it: int list = [22; 200; 746; 931; 975]
 
 // this version puts in a list, if it's divisible it splits it, then merges the result 
 // of the recursive call of each half - when the list gets ti it's finest granularity
 // it just returns the current number. Since each split is merged when the recursion,
 // balance will always be maintained
+
+let triNum = Seq.initInfinite (fun n -> (n*(n+1))/2)
+// Seq.initInfinite takes a function that generates an item in the sequence 
+// --- from a given index, in this case n
+
+triNum;;
+
+// let triNumC cache = 
+
+(*
+    Declare a cached version triNumC of triNum such that already computed elements are cached. 
+    The type of triNumC is seq<int>.
+*)
