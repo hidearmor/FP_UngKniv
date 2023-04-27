@@ -148,3 +148,9 @@ let divideAndConquer split merge indivisible p =
     dc p
 
 divideAndConquer split merge indivisible [22;746;931;975;200];;
+// val it: int list = [22; 200; 746; 931; 975]
+
+// this version puts in a list, if it's divisible it splits it, then merges the result 
+// of the recursive call of each half - when the list gets ti it's finest granularity
+// it just returns the current number. Since each split is merged when the recursion,
+// balance will always be maintained
