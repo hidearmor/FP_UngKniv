@@ -218,3 +218,14 @@ let rect (x1,y1) (x2, y2) = Combine[
 // The above functions creates a rectangle based on the two pair of doubles (coordinates)
 
 // Question 4.2
+
+let rec buildEnv fig = 
+    match fig with
+    | Label(str, fig) -> Map[(str, fig)]
+    | Combine(listA) ->
+        let rec be2 listB =
+                match listB with
+                | x::xs -> Map(Seq.concat [(Map.toSeq (buildEnv x)) ; (Map.toSeq (be2 xs))])
+                | [] -> Map.empty
+        be2 listA
+    | _ -> Map.empty
