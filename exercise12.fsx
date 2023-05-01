@@ -248,7 +248,9 @@ let rec buildEnv fig =
         buildEnvRec list
     | _ -> Map[]
 
-// 
+// buildEnv matches on fig, so that if a Label it returns a map(str, fig), if Combine it creates a new recursive function iterating
+// through the Fig list, recursively calling buildEnv on every element in the list. 
+// In order to concatenate the maps we turn maps into sequences. 
 
 
 
