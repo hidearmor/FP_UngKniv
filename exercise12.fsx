@@ -155,15 +155,66 @@ let divideAndConquer split merge indivisible p =
 // it just returns the current number. Since each split is merged when the recursion,
 // balance will always be maintained
 
+
+//Question 3.1
 let triNum = Seq.initInfinite (fun n -> (n*(n+1))/2)
 // Seq.initInfinite takes a function that generates an item in the sequence 
 // --- from a given index, in this case n
 
-triNum;;
+let triNumC = Seq.cache triNum
 
-// let triNumC cache = 
+// triNumC utilises the Seq.cache function to establish a cached version of triNum.
 
-(*
-    Declare a cached version triNumC of triNum such that already computed elements are cached. 
-    The type of triNumC is seq<int>.
-*)
+//Question 3.2
+
+let rec filterOddIndex s =
+    Seq.append (Seq.singleton (Seq.item 0 s))
+        (filterOddIndex (Seq.skip 2 s))
+
+// Above function taken from exam paper
+
+let rec myFilterOddIndex s = 
+    Seq.delay (fun () -> Seq.append (Seq.singleton (Seq.item 0 s)) (myFilterOddIndex (Seq.skip 2 s)))
+
+// The above function myFilterOddIndex s takes the structure from filterOddIndex s but wraps it into Seq.delay to avoid infinite looping.
+
+//Question 3.3
+
+let rec seqZip s1 s2 = 
+    seq {
+        let e1 = Seq.item 0 s1
+        let e2 = Seq.item 0 s2
+        yield (e1, e2)
+        yield! seqZip (Seq.skip 1 s1) (Seq.skip 1 s2)}
+
+// the function seqZip zips two seqeunces together, by using yield and yield!
+
+//Question 4.1
+
+exception FigError of string
+type Point = P of double * double
+type Fig =
+      Circle of Point * double
+    | Line of Point * Point
+    | Move of double * double * Fig
+    | Combine of Fig list
+    | Label of string * Fig
+    | Ref of string
+
+let rectEx = Combine[
+    Line(P(-1.0,-1.0),P(1.0,-1.0));
+    Line(P(1.0,-1.0),P(1.0,1.0));
+    Line(P(1.0,1.0),P(-1.0,1.0));
+    Line(P(-1.0,1.0),P(-1.0,-1.0))]
+
+//The above value rectEx of type Fig represents a rectangle in the two-dimensional space
+
+let rect (x1,y1) (x2, y2) = Combine[
+    Line(P(x1,y1),P(x2,y1));
+    Line(P(x2,y1),P(x2,y2));
+    Line(P(x2,y2),P(x1,y2));
+    Line(P(x1,y2),P(x1,y1))]
+
+// The above functions creates a rectangle based on the two pair of doubles (coordinates)
+
+// Question 4.2
