@@ -218,3 +218,37 @@ let rect (x1,y1) (x2, y2) = Combine[
 // The above functions creates a rectangle based on the two pair of doubles (coordinates)
 
 // Question 4.2
+
+let figEx02 =
+   Combine [Label("c",Circle(P(0.0,0.0),1.0));
+            Move(1.0,1.0,Ref "c");
+            Move(2.0,2.0,Ref "c")]
+
+// example from exam paper
+
+
+// let figEx03 =
+//    Combine [Label("c",Circle(P(0.0,0.0),1.0));
+//             Move(1.0,1.0,Ref "c");
+//             Move(2.0,2.0,Ref "c");
+//             Label("l", Line(P(1.0,-1.0),P(1.0,1.0)))
+//             Line(P(-1.0,1.0),P(-1.0,-1.0))]
+// // Anotheg Fig example
+
+
+
+let rec buildEnv fig =
+    match fig with 
+    | Label(str, f) -> Map[(str, f)]
+    | Combine(list) ->
+        let rec buildEnvRec lis =
+            match lis with 
+            | f::lis' -> Map (Seq.concat [(Map.toSeq (buildEnv f)) ; (Map.toSeq (buildEnvRec lis'))])
+            | [] -> Map []
+        buildEnvRec list
+    | _ -> Map[]
+
+// 
+
+
+
