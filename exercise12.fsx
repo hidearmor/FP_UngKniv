@@ -252,5 +252,64 @@ let rec buildEnv fig =
 // through the Fig list, recursively calling buildEnv on every element in the list. 
 // In order to concatenate the maps we turn maps into sequences. 
 
+let envEx02 = buildEnv figEx02
+
+// Question 4.3
+
+let rec substFigRefs env fig = 
+    match fig with
+    | Label(string, f) -> f
+    | Ref(str) -> Map.find str env
+    | Combine(l) ->
+        let rec substFigRefsRec list =
+            match list with
+            | f::list' -> substFigRefs env f :: substFigRefsRec list'
+            | [] -> []
+        Combine(substFigRefsRec l)
+    | Move(d1, d2, fig) -> Move(d1, d2, substFigRefs env fig)
+    | Line(p1, p2) -> Line(p1, p2)
+    | Circle(p1, d1) -> Circle(p1, d1)
 
 
+
+// the function above pattern matches on the fig, in order to determine the output. 
+// If the fig is a Label, we simply return the fig contained in the label
+// If the fig is a Ref, we use Map.find to look up the key-value pair in our env referenced by the Ref.
+// If the fig is a Move, we call the function recursively on the fig in Move
+// If the fig is Combine, we iterate through the list recursively calling the function on every fig
+ // returning a Combine with the new list
+ // If the fig is Line or Circle, nothing happens.
+
+let substEx02 = substFigRefs envEx02 figEx02
+
+
+ // Question 4.4
+
+let ( + ) (P(d1, d2): Point) (P(d3, d4): Point) =
+    P(d1+d3, d2+d4)
+
+// The above helper-function enables us to make addition with points
+
+let rec reduceMove fig = 
+    match fig with
+    | Circle(p1, d1) -> Circle(p1, d1)
+    | Line(p1, p2) -> Line(p1, p2)
+    | Move(d1, d2, fig') ->
+        let movePoint = P(d1, d2) 
+        match fig' with
+        |Circle(p1, d3) -> Circle(p1+movePoint, d3)
+        |Line(p1, p2) -> Line(p1+movePoint, p2+movePoint)
+    | Combine(l) ->
+        let rec reduceMoveRec list = 
+            match list with
+            | f::list' -> reduceMove f :: reduceMoveRec list'
+            | [] -> []
+        Combine(reduceMoveRec l)
+
+// In the above function we assume the Label and Ref figs no longer exist
+// We also assume that the Move fig is never called on a Combine fig.
+// The interesting part as the pattern match on move, that creates a "movePoint" from the two double values
+// The abstraction is that to move a fig dx, and dy is the same is adding the point(s) in the figure with 
+// a point with coordinates (dx, dy). Hence we can utitlise our infix operator function from above.
+
+let reduceEx02 = reduceMove substEx02
