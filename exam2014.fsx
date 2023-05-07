@@ -3,7 +3,7 @@ type OrderedList<'a when 'a : equality> =
      rear: 'a list}
     
 let ex = {front = ['x']; rear = ['z';'y']}
-to
+
 // Question 1.1 
 
 let ol1 = {front = ["Hans"; "Brian"; "Gudrun"]; rear = []}
@@ -68,4 +68,35 @@ let fold f start ol =
         |[] -> start'
     foldR f start (toList ol)
 
-    
+// Question 1.8
+
+let multiplicity ol = fold (fun e x -> if Map.containsKey x e then Map.add (x) ((Map.find x e)+1) (e) else Map.add x 1 e) Map.empty ol 
+
+
+// Question 2.1
+
+// f changes the values of the elements in the list, by some number related to i. 
+// It returns a new list with all values changed. The value of i in the last recursive call
+// is added to the end of the list, so the length of the output list is one greater than 
+// the lenght of the input list.
+// From the above follows that f, can never return an empty list. If you cal f with an empty list
+// you will get a list containing one element (namely i) as output
+// I don't see how f could go into an infinite loop, since we iterate over the list which by construction
+// has a fintie number of elements. 
+
+// Question 2.2
+
+let rec fA acc i = function
+    |[] -> List.rev (i::acc)
+    |x::xs -> fA ((i+x)::acc) (i+1) xs
+
+let ex1 = fA List.Empty 10 [0;1;2;3]
+
+// Question 2.3
+
+let rec fC c i = function
+    |[] -> c [i]
+    |x::xs -> fC (fun l -> c ((i+x)::l)) (i+1) xs
+
+let ex2 = fC id 10 [0;1;2;3]
+
