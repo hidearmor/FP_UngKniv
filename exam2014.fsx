@@ -155,3 +155,10 @@ let mt2 N M =
     }
 
 mt2 3 2;;
+
+// Question 3.4
+let ppMultTable N M = 
+    Seq.map (fun (n, m, prod) -> sprintf "%d * %d = %d" n m prod) (mt2 N M)
+
+Seq.take 4 (ppMultTable 10 10)
+
