@@ -117,3 +117,35 @@ let rec fC c i = function
 
 let ex3 = fC id 10 [0;1;2;3]
 
+// Question 3.1
+
+let myFinSeq n M = Seq.map (fun m -> n+n*m) [0..M]
+
+// the sequence resulting from this function when inputting two arbitrary integers n and M 
+// is a sequence of length M+1, that has that value n as the first and then 2n as the next
+// and so on until the M'th element, which is that last.
+// I.E. the multiplication table for n for the first M+1 elements
+
+// Question 3.2
+
+let mySeq n = Seq.initInfinite (fun i -> n+n*i)
+
+// Question 3.3
+
+
+let multTable N M = Seq.map (fun m -> (Seq.map (fun n -> n) [0..N]), m, n*m) [0..M]
+
+let mt N M = 
+    let rec f m = function
+        | [] -> [] 
+        | n::ns -> (n, m, n*m)::f (m) (ns)
+    Seq.map 
+        (fun m -> List.toSeq ((f (m) [0..N]))) 
+        [0..M] 
+        |> Seq.concat
+
+
+mt 3 2
+
+Seq.item 11 (mt 3 2)
+// to return the element triples (n,m,n*m) where n 2 [0,...,N] and m 2 [0,...,M].
