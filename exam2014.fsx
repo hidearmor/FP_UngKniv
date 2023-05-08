@@ -1,5 +1,5 @@
 type OrderedList<'a when 'a : equality> =
-    {front: 'a list;
+    {front: 'a list; // <- the syntax with name (label) and value in brackets is a RECORD
      rear: 'a list}
     
 let ex = {front = ['x']; rear = ['z';'y']}
@@ -32,7 +32,7 @@ let toList (ol: OrderedList<'a>) = (canonical ol).front
 
 
 // Question 1.3
-let newOL ()= {front = []; rear = []}
+let newOL () = {front = []; rear = []}
 
 let isEmpty ol = if ol.front = [] && ol.rear = [] then true else false
 
@@ -41,12 +41,16 @@ let isEmpty ol = if ol.front = [] && ol.rear = [] then true else false
 let addFront x ol = {front = x::ol.front; rear = ol.rear}
 
 let removeFront (ol: OrderedList<'a>) = 
-    let x::xs = toList ol
-    (x, {front = xs; rear = []})
+    let oll = toList ol
+    match oll with
+    |[] -> failwith "list is empty"
+    |x::xs -> (x, {front = xs; rear = []})
 
 let peekFront ol = 
-    let x::xs = toList ol
-    x
+    if isEmpty ol then failwith "no elements" 
+        else
+        let x::xs = toList ol
+        x
 
 // Question 1.5
 
@@ -54,11 +58,13 @@ let append ol1 ol2 = {front = toList ol1; rear = List.rev (toList ol2)}
 
 // Question 1.6
 
-let rec map f ol = 
+let map f ol = 
     let rec mapR = function
         |x::xs -> f x :: mapR xs
         |[] -> []
     {front = mapR (toList ol); rear = []}
+    // {front = mapR (ol.front); rear = mapR ol.rear}   // <- returns the same order of the ordered list
+
 
 // Question 1.7
 
@@ -70,7 +76,11 @@ let fold f start ol =
 
 // Question 1.8
 
-let multiplicity ol = fold (fun e x -> if Map.containsKey x e then Map.add (x) ((Map.find x e)+1) (e) else Map.add x 1 e) Map.empty ol 
+let multiplicity ol = fold 
+                        (fun e x -> 
+                            if Map.containsKey x e then Map.add (x) ((Map.find x e)+1) (e) 
+                            else Map.add x 1 e) 
+                        Map.empty ol 
 
 
 // Question 2.1
@@ -90,7 +100,14 @@ let rec fA acc i = function
     |[] -> List.rev (i::acc)
     |x::xs -> fA ((i+x)::acc) (i+1) xs
 
+let fA2 j l = 
+    let rec fArec acc i = function
+        |[] -> List.rev (i::acc)
+        |x::xs -> fArec ((i+x)::acc) (i+1) xs
+    fArec List.Empty j l
+
 let ex1 = fA List.Empty 10 [0;1;2;3]
+let ex2 = fA2 10 [0;1;2;3]
 
 // Question 2.3
 
@@ -98,5 +115,5 @@ let rec fC c i = function
     |[] -> c [i]
     |x::xs -> fC (fun l -> c ((i+x)::l)) (i+1) xs
 
-let ex2 = fC id 10 [0;1;2;3]
+let ex3 = fC id 10 [0;1;2;3]
 
