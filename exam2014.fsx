@@ -132,9 +132,6 @@ let mySeq n = Seq.initInfinite (fun i -> n+n*i)
 
 // Question 3.3
 
-
-let multTable N M = Seq.map (fun m -> (Seq.map (fun n -> n) [0..N]), m, n*m) [0..M]
-
 let mt N M = 
     let rec f m = function
         | [] -> Seq.empty
@@ -143,7 +140,6 @@ let mt N M =
         (fun m -> f (m) [0..N]) 
         [0..M] 
         |> Seq.concat
-
 
 mt 3 2
 
