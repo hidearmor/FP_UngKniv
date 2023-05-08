@@ -137,10 +137,10 @@ let multTable N M = Seq.map (fun m -> (Seq.map (fun n -> n) [0..N]), m, n*m) [0.
 
 let mt N M = 
     let rec f m = function
-        | [] -> [] 
-        | n::ns -> (n, m, n*m)::f (m) (ns)
+        | [] -> Seq.empty
+        | n::ns -> Seq.append (Seq.singleton (n, m, n*m)) (f (m) (ns))
     Seq.map 
-        (fun m -> List.toSeq ((f (m) [0..N]))) 
+        (fun m -> f (m) [0..N]) 
         [0..M] 
         |> Seq.concat
 
