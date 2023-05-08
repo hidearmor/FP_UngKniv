@@ -145,3 +145,13 @@ mt 3 2
 
 Seq.item 11 (mt 3 2)
 // to return the element triples (n,m,n*m) where n 2 [0,...,N] and m 2 [0,...,M].
+
+// Alternatively we build the sequence directly:
+let mt2 N M =
+    seq {
+        for n in [0..N] do 
+            for m in [0..M] do
+                (n, m, n*m)
+    }
+
+mt2 3 2;;
