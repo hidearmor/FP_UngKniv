@@ -192,7 +192,7 @@ let _ = Seq.take 10 (mySeq 2)
 (* Define the finite sequence multTable N M to return the tripples (n,m,n*m) where n \in [0,..M] and m \in [0,..M] *) 
 let multTable N M = seq {for n in [0..N] do
                            for m in [0..M] do
-                             yield (n,m,n*m) }
+                             yield (n,m,n*m) } // here Niels uses yield, which we did not do
 let _ = Seq.take 100 (multTable 10 10) 
 
 (* Define the finite sequence ppMultTable N M to return the sequence "<n>*<m> is <n*m>" for n \in [0,..,N] and m \in [0,..,M],
@@ -213,7 +213,7 @@ type opr = MovePenUp
 
 type plot = Opr of opr
           | Seq of plot * plot
-          | Repeat of int * plot
+          | Repeat of int * plot      // repeat was taken away from the exam set but Niels kept it in these notes
             static member (+) (p1,p2) = Seq(p1, p2) 
 
 let side = Seq(Opr MovePenDown, Seq(Opr Step, Seq(Opr Step, Opr Step)))
