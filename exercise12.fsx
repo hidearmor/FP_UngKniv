@@ -83,6 +83,7 @@ let rec map f h =
 let f x = x % 2
 
 chkHeapProperty (map f ex3)
+map f ex3 |> chkHeapProperty // the same as above
 
 // Defining the function f x = x % 2, will in our (and most cases) make chkHeapProperty (map f ex3) return false
 
@@ -146,6 +147,9 @@ let divideAndConquer split merge indivisible p =
                 let x,y = split p
                 merge((dc y),(dc x))
     dc p
+
+// test
+getRandomsP 10 |> Array.toList |> divideAndConquer split merge indivisible
 
 // divideAndConquer split merge indivisible [22;746;931;975;200];;
 // val it: int list = [22; 200; 746; 931; 975]
@@ -258,17 +262,17 @@ let envEx02 = buildEnv figEx02
 
 let rec substFigRefs env fig = 
     match fig with
-    | Label(string, f) -> f
-    | Ref(str) -> Map.find str env
-    | Combine(l) ->
+    | Label(string, f)      -> f
+    | Ref(str)              -> Map.find str env
+    | Combine(l)            ->
         let rec substFigRefsRec list =
             match list with
             | f::list' -> substFigRefs env f :: substFigRefsRec list'
             | [] -> []
         Combine(substFigRefsRec l)
-    | Move(d1, d2, fig) -> Move(d1, d2, substFigRefs env fig)
-    | Line(p1, p2) -> Line(p1, p2)
-    | Circle(p1, d1) -> Circle(p1, d1)
+    | Move(d1, d2, fig)     -> Move(d1, d2, substFigRefs env fig)
+    | Line(p1, p2)          -> Line(p1, p2)
+    | Circle(p1, d1)        -> Circle(p1, d1)
 
 
 
@@ -292,14 +296,14 @@ let ( + ) (P(d1, d2): Point) (P(d3, d4): Point) =
 
 let rec reduceMove fig = 
     match fig with
-    | Circle(p1, d1) -> Circle(p1, d1)
-    | Line(p1, p2) -> Line(p1, p2)
-    | Move(d1, d2, fig') ->
+    | Circle(p1, d1)        -> Circle(p1, d1)
+    | Line(p1, p2)          -> Line(p1, p2)
+    | Move(d1, d2, fig')    ->
         let movePoint = P(d1, d2) 
         match fig' with
-        |Circle(p1, d3) -> Circle(p1+movePoint, d3)
-        |Line(p1, p2) -> Line(p1+movePoint, p2+movePoint)
-    | Combine(l) ->
+        |Circle(p1, d3)     -> Circle(p1+movePoint, d3)
+        |Line(p1, p2)       -> Line(p1+movePoint, p2+movePoint)
+    | Combine(l)            ->
         let rec reduceMoveRec list = 
             match list with
             | f::list' -> reduceMove f :: reduceMoveRec list'
