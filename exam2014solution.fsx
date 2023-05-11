@@ -24,6 +24,9 @@ let ol = [ol1;ol2;ol3;ol4]
 let canonical = function
   {front=f; rear=r} -> {front = f @ List.rev r; rear = []}
 
+  // the pattern matching below is added by Niels because the pattern matching does no know 
+  // the nature of canonical. So it should actually never reack the second pattern, 
+  // it's just there for the compiler not to become angry
 let toList ol =
   match canonical ol with
     {front=f;rear=[]} -> f
@@ -52,6 +55,8 @@ let addFront e = function
   {front=f;rear=r} -> {front=e::f;rear=r}
 let p1_13 = addFront 'w' ex
 
+// in our own version, we do the canonical computation and "change" the ordered list
+// whereas thiso ne below return exactly the same structure of the ordered list
 let removeFront = function
     {front=[];rear=[]} -> failwith "removeFront: Ordered list is empty."
   | {front=[];rear=r} -> let f = List.rev r
@@ -88,6 +93,8 @@ let addRear e = function
 
 let p1_18 = addRear 'd' ex
 
+// below Niels tries not to use toList or canonical. This is to use less computation 
+// time, so instead he just uses the data structure we built.  (see our own verison for reference)
 let append ol1 ol2 =
   match (ol1, ol2) with
     ({front=f1;rear=r1},{front=f2;rear=r2}) -> {front=f1;rear=r1@List.rev f2@r2}
@@ -122,6 +129,8 @@ let p1_24 = multiplicity (addFront 'x' ex)
 let rec f i = function
     [] -> [i]
   | x::xs -> i+x :: f (i+1) xs
+// above it is not tail recursive because we are consing
+// outside the (recursive) function call
 
 let _ = f 10 [0;1;2;3]
 let _ = f 10 []

@@ -41,7 +41,7 @@ let rec insertNth e n xs =
   | (_, []) -> [e] // We just insert with lowest priority number.
 
 let ofPSet (PrioritySet l) = l
-Let _ = insertNth "A" 3 (ofPSet ex4)
+let _ = insertNth "A" 3 (ofPSet ex4)
 
 // Q1.3
 let removeL e = List.filter (fun x -> x<>e)
