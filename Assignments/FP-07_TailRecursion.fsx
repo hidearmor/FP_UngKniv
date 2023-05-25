@@ -25,12 +25,12 @@ let sum(m,n) =
   sum2(m,n,0)
 
   //Alternative version
-  // let sum(m,n) =
-  //   let rec tail n acc = 
-  //     match n with
-  //     | 0 -> acc + m
-  //     | n -> tail (n-1) (acc+m+n)
-  //   tail n 0
+let sum2(m,n) =
+  let rec tail n acc = 
+    match n with
+    | 0 -> acc + m
+    | n -> tail (n-1) (acc+m+n)
+  tail n 0
 
 (* Example *)
 // sum(10,10)

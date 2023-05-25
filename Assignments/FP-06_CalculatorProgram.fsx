@@ -95,7 +95,7 @@ let intpProg (insElem: Instruction list) : float =
     stackRec (S []) insElem                                               // Then run the stackRec inner function (loop) with the remaining stack (myStack) and the rest of the 
     //instruction list as arguments. Finally: Call the stackRec with an empty stach S[] to execute the instructions and get to the top element of the stack
 
-(* SHORTER VERSION WITH DIFFERENT VARIABLE NAMES for pedagigical reasons
+(* SHORTER VERSION WITH DIFFERENT VARIABLE NAMES for pedagigical reasons *)
 let intProg list  =
     let rec execute stack prog = 
         match prog with
@@ -107,7 +107,7 @@ let intProg list  =
             execute newStack xs
     
     execute (S []) list
-*)
+
 
 intpProg [PUSH 4.5; PUSH 3.0; ADD; PUSH 2.0; MULT; SIN];; 
 //<-- This works!
