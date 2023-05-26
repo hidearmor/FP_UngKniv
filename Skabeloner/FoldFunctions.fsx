@@ -12,7 +12,7 @@ let fold f start ol =
         |[] -> start'
     foldR f start (toList ol)
 
-// Solution fro 2014 1.7 using library List function (more clean)
+// Solution for 2014 1.7 using library List function (more clean)
 // This makes good sense since we have a function toList, that transform our ol parameter
 // into a list. 
 // In the exam from 2022 such a function does not exist, hence the fold is written "manually"
