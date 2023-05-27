@@ -1,5 +1,3 @@
-
-
 //  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 //  °°°°°°°°°°°°°°   LISTS   °°°°°°°°°°°°°°°°°°°
 //  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
@@ -49,7 +47,8 @@ let rec split = function
                     (x::xs1,y::xs2)
 
 
-//  °°°°°°°°°°°° LIST FUNCTIONS °°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°° COLLECTION FUNCTIONS °°°°°°°°°°°°°°°°
+// most of these are usable with both list and sequence
 
 // dummy lists
 let l1 = [1;2]
@@ -85,7 +84,12 @@ List.find testFunction [1..5]
 // val testFunction: x: int -> bool
 // val it: int = 3
 
-List.filter     // returns list with elements fulfillinf a predicate defined by a function
+List.tryFind    // safer version of find
+
+List.forall     // return true if LL elements fulfill the predicate
+List.filter     // returns list with elements fulfill a predicate defined by a function
+List.choose     // a bit like filter, but the function returns an option type
+                // and only returns those elements where the funciton results in Some('a)
 
 List.exists //check if element exists in list
 
@@ -123,6 +127,35 @@ List.toArray    // to array
 List.rev        // reverses list efficiently
 
 
-List.choose
-List.compareWith
-List.countBy
+List.compareWith    // compares elements from two lists index-wise 
+                    // returns if match
+List.countBy id [4; 5 ; 1 ; 1 ; 6 ; 99; 4] // this counts the instances of each number
+// val it: (int * int) list = [(4, 2); (5, 1); (1, 2); (6, 1); (99, 1)]
+
+List.sort
+List.sortBy 
+
+
+//  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°°   Sequences   °°°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+(*
+    Sequences are lazy and thus the elements are only evaluated 
+    when they are needed (roughly) - can be really effective
+*)
+
+// natural sequence
+let nat = Seq.initInfinite (fun i -> i);; // val nat : seq<int>
+
+//  °°°°°°°°°°°° SEQUENCE FUNCTIONS °°°°°°°°°°°°°°°°
+
+// MOST LIBRARY-FUNCITONS for collections are the same
+// i.e. most funcitons for Seq are the same as for List
+let dummy = Seq.init 5 (fun i -> i) // val it: seq<int> = seq [0; 1; 2; 3; ...]
+
+
+// A few examples:
+Seq.average (Seq.init 5 (fun i -> (i:float))) // val it: float = 2.0
+Seq.sum dummy //val it: int = 10
+Seq.sumBy (fun x -> x+x) dummy //val it: int = 20
