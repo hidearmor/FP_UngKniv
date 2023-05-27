@@ -137,7 +137,7 @@ List.sortBy
 
 
 //  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
-//  °°°°°°°°°°°°   Sequences   °°°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°°   SEQUENCES   °°°°°°°°°°°°°°°°°
 //  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 
 (*
@@ -154,8 +154,50 @@ let nat = Seq.initInfinite (fun i -> i);; // val nat : seq<int>
 // i.e. most funcitons for Seq are the same as for List
 let dummy = Seq.init 5 (fun i -> i) // val it: seq<int> = seq [0; 1; 2; 3; ...]
 
+// sequence funcitons
+Seq.cache dummy // chaches the computed parts of the sequence for reference if used again
+Seq.delay       
+// delays the computation, used in recursive funcitons to avert infinite recursion
+// like so:
+let filterFun a sq = Seq.filter(fun n -> n%a <> 0) sq;; 
+// returns a sequence that has filtered out all duplicates of current number (p)
+let rec delayedWeirdFilter sq =
+      Seq.delay (fun () ->                      // delay this anonymous function
+                     let p = Seq.item 0 sq      // first/current item
+                     Seq.append                 // append 
+                        (Seq.singleton p)       // the current item as a sequence
+                        (delayedWeirdFilter                  // with the resulting sequence from the recursive call
+                            (filterFun p (Seq.skip 1 sq))));; //after is has been filtered
 
-// A few examples:
+
+// A few examples of other, common collection functions:
 Seq.average (Seq.init 5 (fun i -> (i:float))) // val it: float = 2.0
 Seq.sum dummy //val it: int = 10
 Seq.sumBy (fun x -> x+x) dummy //val it: int = 20
+Seq.item 3 dummy // returns 4'th element in dummy sequence
+
+
+//      † † † † † † † † † † † † † † † † † † † † 
+//      † † †    Sequence EXPRESSIONS     † † †
+
+// yield adds an element to the sequence being built
+// yield! adds a whole sequence to the sequence being built
+
+
+//  † †     example     † † 
+// that builds a sequence recursively with all the odd 
+// numbers from the input sequence
+let dummy2 = Seq.init 10 (fun i -> i)
+let checkEven s = Seq.filter (fun x -> (x%2 = 0)) // filters input sequence, checking for evens
+// val checkEven: s: 'a -> (seq<int> -> seq<int>)
+let rec buildSeq sq =
+    seq { let p = Seq.item 0 sq
+          yield p
+          yield! buildSeq(checkEven p (Seq.skip 1 sq)) };; 
+          // val buildSeq: sq: seq<int> -> seq<int>
+          // still just a sequence as value, nothing evaluated yet
+
+// the resulting sequence
+buildSeq dummy2 // val it: seq<int> = seq [0; 2; 4; 6; ...]
+
+
