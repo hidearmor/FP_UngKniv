@@ -201,3 +201,18 @@ let rec buildSeq sq =
 buildSeq dummy2 // val it: seq<int> = seq [0; 2; 4; 6; ...]
 
 
+//  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°°°°   ARRAYS   °°°°°°°°°°°°°°°°°°
+//  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+// An array is created using the following syntax: 
+    let a = [|4;5;6;7|]
+
+// Elements of an array can be accessed directly using the indeces, eg:
+    a.[2]
+
+// Values can be updated using the mutable syntax (See MutableAndReferences.fsx):
+    a.[2] <- 3
+    a;;
+
+// A list of array library functions can be found on H.R page 187
