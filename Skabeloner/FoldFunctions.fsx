@@ -5,6 +5,7 @@ let rec fold f e tc =
         |TrashItems (ts, tc) -> fold f (f e ts) tc 
         |Empty -> e
 
+
 //From Exam 2014 1.7
 let fold f start ol = 
     let rec foldR f' start' = function
