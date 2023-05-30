@@ -4,7 +4,7 @@
 
     Note:
     It makes use of a library created beforehand bye Peter Sabroe,
-    Allan Poulsen and Jonas Ryan from prepering togethfer for the exam,
+    Allan Poulsen and Jonas Ryan from prepering together before the exam,
     thus similarities can occur in style, structure, naming of variables etc.
     Including this particular template for this particular exam.
 *)
