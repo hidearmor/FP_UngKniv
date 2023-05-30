@@ -142,4 +142,91 @@ let g x = x * 2
 
 Seq.take 6 (mySeq g 1)
 
+// Question 3
+
+type name = string
+type quantity = float
+type date = int * int * int
+type price = float
+type transType = Buy | Sell
+type transData = date * quantity * price * transType
+type trans = name * transData
+
+
+let ts : trans list =
+  [("ISS", ((24,02,2014),100.0,218.99,Buy));  ("Lego",((16,03,2015),250.0,206.72,Buy));
+   ("ISS", ((23,02,2016),825.0,280.23,Buy));  ("Lego",((08,03,2016),370.0,280.23,Buy));
+   ("ISS", ((24,02,2017),906.0,379.46,Buy));  ("Lego",((09,11,2017), 80.0,360.81,Sell));
+   ("ISS", ((09,11,2017),146.0,360.81,Sell)); ("Lego",((14,11,2017),140.0,376.55,Sell));
+   ("Lego",((20,02,2018),800.0,402.99,Buy));  ("Lego",((02,05,2018),222.0,451.80,Sell));
+   ("ISS", ((22,05,2018),400.0,493.60,Buy));  ("ISS", ((19,09,2018),550.0,564.00,Buy));
+   ("Lego",((27,03,2019),325.0,625.00,Sell)); ("ISS", ((25,11,2019),200.0,680.50,Sell));
+   ("Lego",((18,02,2020),300.0,720.00,Sell))]
+
+
+// Question 3.1
+
+let addTransToMap ((n, td):trans) m =
+        match Map.tryFind n m with
+        | None -> Map.add n [td] m
+        | Some (tlist) -> Map.add n (td::tlist) m
+
+
+let m1 = addTransToMap ("ISS", ((24,02,2014),100.0,218.99,Buy)) Map.empty
+let m2 = addTransToMap ("ISS", ((22,05,2018),400.0,493.60,Buy)) m1
+
+let shares = List.foldBack addTransToMap ts Map.empty
+
+// Question 3.2
+
+let accTrans (tq:float,avg:float) ((d,q,p,tType):transData) =
+    match tType with
+    | Buy -> (tq+q, (avg * tq + q * p)/(tq + q))
+    | Sell -> (tq-q, avg)
+
+let quantityAndAvgPrice ts =
+       List.fold accTrans (0.0,0.0) ts
+
+quantityAndAvgPrice [((24,02,2014),100.0,218.99,Buy);
+                          ((23,02,2016),825.0,280.23,Buy)]
+
+let res = Map.map (fun n s -> quantityAndAvgPrice s) shares 
+
+
+// Question 4
+
+let rec dup = function
+    | [] -> []
+    | x::xs -> x::x::dup xs
+
+// Description: Given the input list [eo, e1, ... en], the list returned by dup [e0, e1, .. en]
+// is [e0, e0, e1, e1, e2, e2, e3, e3, .. en, en]
+
+dup [1;2;3]
+
+let dupA xs =
+    let rec dupRec = function
+        |([], ys) -> List.rev ys
+        |(x::xs, ys) -> dupRec(xs, x::x::ys)
+    dupRec(xs, [])
+
+dupA [1;2;3]
+
+// Question 4.2
+
+let replicate2 i = seq [i; i]
+
+replicate2 4
+
+let dupSeq = Seq.initInfinite (fun i -> replicate2 i ) |> Seq.concat
+
+Seq.item 9 dupSeq
+
+// Question 4.3 
+
+let dupSeq2 s = seq { for n in s do
+                        yield! replicate2 n}
+
+dupSeq2 (seq [1;2])
+
 
