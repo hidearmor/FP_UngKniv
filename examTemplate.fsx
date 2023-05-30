@@ -1,3 +1,13 @@
+(*
+    I hereby declare that I myself have created this exam 
+    hand–in in its entirety without help from anybody else.
+
+    Note:
+    It makes use of a library created beforehand bye Peter Sabroe,
+    Allan Poulsen and Jonas Ryan from prepering togethfer for the exam,
+    thus similarities can occur in style, structure, naming of variables etc.
+    Including this particular template for this particular exam.
+*)
 //  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 //  °°°°°  Q 1.1  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 
