@@ -168,3 +168,109 @@ let rec f x = function
         ys' -> y::ys'
 
 f 10 [10; 3; 4; 10; 5; 10; 6]
+
+f 11[1..10] 
+
+// Allan's
+// Type 'a -> 'a list -> 'a list
+
+// The function keyword indicates similar as match ... with. Int his case the ... is a list (see pattern
+// matching). In other words, the function takes an int (x) and a list. Then it takes first element and compares to
+// x. If they are equal., it calls itself with x and the rest of y.
+// If first element is not equal to x, it matches again, this time using ys (the rest of list) and x as arguments
+// The result of this match is bound to ys' and then the top of that list is consed onto the list.
+// The function should return a a list, where x is removed (if it was in the list) otherwise it just returns the original list
+
+// 3.3 - Allan's
+// tail recursive
+
+let rec fA x =
+    let rec fA' acc = function
+          [] -> List.rev acc
+        | y::ys when x=y -> fA' acc ys
+        | y::ys when x <> y -> fA' (y::acc) ys
+    fA' []
+
+fA 3 [1..10]
+
+// 3.4 - Allan's
+let fSeq x ys =
+    seq { for n in ys do
+                        if n<>x then yield n}
+fSeq 2 {1..10}
+
+// 4.1 - Allan's
+type Field = ValField of int
+type FieldMap = Map<string, Field>
+
+let fieldMap = Map.ofList [("A", ValField 42);
+                                                        ("B", ValField 43);
+                                                        ("C", ValField 0)]
+let fieldNames = List.map fst (Map.toList fieldMap)
+
+let getField fM fN = fM |> Map.find fN 
+
+getField fieldMap "A"
+List.map (getField fieldMap) fieldNames
+
+let getFieldValue (fi: Field) = 
+    match fi with
+    | ValField value -> value
+getFieldValue (getField fieldMap "A")
+
+let lookupFieldValue (fM : Map<'a, 'b>) fN = getField fM fN |> getFieldValue
+List.map (lookupFieldValue fieldMap) fieldNames
+
+// USing Map.change
+let updateField2 fM (fN : string ) nVal = 
+    fM |> Map.change fN (fun x -> 
+        match x with 
+        | Some v -> Some (ValField nVal)
+        | None -> None
+    )
+updateField2 fieldMap "A" 32
+
+
+// Using Map.add
+let updateField fM fN nVal = 
+    let myMap = fM |> Map.add fN (ValField nVal)
+    myMap
+
+updateField fieldMap "A" 32
+    
+
+// 4.2 - Allan's
+type Function =
+        FnOneToOne of string * string * (int -> int)
+type FuncMap = Map<string, Function>
+let fnAddTwoAC = ("fnAddTwoAC", FnOneToOne ("A", "C", fun a -> a + 2))
+let fnNegateAB = ("fnNegateAB", FnOneToOne ("A", "B", fun a -> -a))
+let funcMap = Map.ofList [fnAddTwoAC;fnNegateAB]
+
+
+let evalFn fM (funcN : Function)  =  
+    match funcN with
+    | FnOneToOne (strA, strB, myFunction) -> 
+        let valA = lookupFieldValue fM strA
+        let valB = valA |> myFunction
+        updateField fM strB valB
+        
+evalFn fieldMap (snd fnAddTwoAC)
+
+let findFunctionsBySource sF (fMap : FuncMap) =
+    fMap |> Map.toList |> List.filter (fun fx -> 
+        match snd fx with
+        | FnOneToOne (strA, _, _) -> strA = sF)
+
+findFunctionsBySource "A" funcMap
+     
+
+//  Below is giving me a hard time / Allan
+let evalField fieldName funcMap fieldMap=
+    let myFunctions = findFunctionsBySource fieldName funcMap
+    myFunctions 
+        |> List.map (fun x  -> evalFn fieldMap (snd x))
+
+evalField "A" funcMap fieldMap
+
+// ^^Not quite there - but on the way...
