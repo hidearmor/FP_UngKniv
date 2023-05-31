@@ -68,6 +68,19 @@ let rec fA acc i = function
     |x::xs -> fA ((i+x)::acc) (i+1) xs
 
 
+// A very simple example - non-tail
+let rec f n m =
+    if m=0 then n
+    else n * f (n+1) (m-1)
+
+// Tail
+let fA n m =
+    let rec fA' n m acc = 
+        if m = 0 then n*acc
+        else fA' (n+1) (m-1) (n*acc)
+    fA' n m 1
+
+
 
 //--------------------------------------------------------
 //------------------- CONTINUATION -----------------------
