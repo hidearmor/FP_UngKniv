@@ -70,6 +70,7 @@ let rec prettyPrint r =
 
 let prettyPrint1 (r: Rope) = string(r)
 
+prettyPrint rope1
 prettyPrint1 rope1
 
 
